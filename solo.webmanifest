@@ -1,0 +1,16 @@
+{
+  "name": "티처스 혼공",
+  "short_name": "혼공",
+  "description": "졸업 후에도 나미쌤 공부법으로 혼자서 — 타이머, 회독, 단권화, 나만의 문제",
+  "start_url": "solo.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF9F0",
+  "theme_color": "#1F2B5B",
+  "lang": "ko",
+  "icons": [
+    { "src": "solo-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "solo-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

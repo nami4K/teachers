@@ -4,7 +4,14 @@
 <base target="_top">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<title>성적을 부탁해 티처스</title>
+<title>티처스 혼공</title>
+<link rel="manifest" href="solo.webmanifest">
+<meta name="theme-color" content="#1F2B5B">
+<link rel="icon" type="image/png" href="solo-icon-192.png">
+<link rel="apple-touch-icon" href="solo-icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="혼공">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
@@ -338,8 +345,6 @@ textarea.input{resize:vertical;min-height:48px}
 </style>
 </head>
 <body>
-<div id="demoBar" class="demo hidden">🧪 체험 모드 — 이 기기에만 저장돼요. (실제 기록은 주소 끝의 ?demo 를 빼고 열면 돼요)
-  <button style="text-decoration:underline;font-size:12.5px" onclick="if(confirm('체험 데이터를 모두 지우고 처음부터 할까요?')){Object.keys(localStorage).filter(k=>k.startsWith('tch_')).forEach(k=>localStorage.removeItem(k));location.reload();}">처음부터 다시</button></div>
 <div id="app"></div>
 <div id="toast"></div>
 <div id="modalRoot"></div>
@@ -480,13 +485,13 @@ function subjColor(name) {
   return SUBJ_COLORS[i % SUBJ_COLORS.length];
 }
 const QTYPES = [
-  { t:'OX', e:'⭕', n:'OX', help:'맞으면 O, 틀리면 X! 친구들이 헷갈릴 만한 문장으로 만들어 봐.' },
+  { t:'OX', e:'⭕', n:'OX', help:'맞으면 O, 틀리면 X! 내가 헷갈렸던 문장으로 만들어 봐.' },
   { t:'MC', e:'🔢', n:'객관식', help:'정답 1개 + 그럴듯한 오답 2~3개. 오답을 잘 만드는 게 진짜 실력이야!' },
   { t:'BLANK', e:'✏️', n:'빈칸', help:'문장을 쓰고, 빈칸으로 만들 핵심어를 적어. 백지 복습 연습이 돼!' },
   { t:'PAIR', e:'🃏', n:'개념어', help:'개념어와 뜻을 짝으로! 짝맞추기 게임과 퀴즈에 나와.' },
   { t:'ENG', e:'🔤', n:'영어본문', help:'교과서 본문 문장을 그대로 써 봐! 문장 배열 게임·빈칸 퀴즈로 나와서 본문 외우기가 돼.' },
-  { t:'PHOTO', e:'📷', n:'사진', help:'교과서·학습지·문제집의 그림이나 문제를 찍고, 정답을 주관식으로 적어! 친구들은 사진을 확대해 보면서 풀어.' },
-  { t:'ESSAY', e:'📝', n:'서술형', help:'문장으로 답하는 문제! 모범 답안과 핵심어(채점 기준)를 적으면, 친구 답에 핵심어가 몇 개 들어 있는지로 채점해. 사진도 넣을 수 있어.' },
+  { t:'PHOTO', e:'📷', n:'사진', help:'교과서·학습지·문제집의 그림이나 문제를 찍고, 정답을 주관식으로 적어! 나중에 사진을 확대해 보면서 다시 풀어.' },
+  { t:'ESSAY', e:'📝', n:'서술형', help:'문장으로 답하는 문제! 모범 답안과 핵심어(채점 기준)를 적으면, 내 답에 핵심어가 몇 개 들어 있는지로 채점해. 사진도 넣을 수 있어.' },
 ];
 
 const BADGES = [
@@ -510,8 +515,7 @@ const BADGES = [
   { id:'lv5', e:'🌼', n:'꽃 피움', d:'레벨 6 [첫 꽃] 달성', ok:s=>s.xp>=1500 },
   { id:'q1', e:'✍️', n:'첫 출제', d:'나만의 문제를 처음 만들었어요', ok:s=>s.qTotal>=1 },
   { id:'q10', e:'📜', n:'출제왕', d:'문제를 10개 만들었어요', ok:s=>s.qTotal>=10 },
-  { id:'qc', e:'🎁', n:'인기 출제자', d:'친구들이 내 문제를 20번 맞혔어요', ok:s=>s.creditTotal>=20 },
-  { id:'g50', e:'🧠', n:'퀴즈 50정답', d:'친구 문제를 50개 맞혔어요', ok:s=>s.qCorrectTotal>=50 },
+  { id:'g50', e:'🧠', n:'퀴즈 50정답', d:'문제를 50개 맞혔어요', ok:s=>s.qCorrectTotal>=50 },
   { id:'f5', e:'🔒', n:'집중 5회', d:'집중 모드로 25분 이상 5번', ok:s=>s.focusTotal>=5 },
 ];
 
@@ -574,9 +578,9 @@ function ddayText(target) {
 }
 function slotLabel(i) { const m = 360 + i * 30; return pad(Math.floor(m / 60)) + ':' + pad(m % 60); }
 const store = {
-  get(k, def) { try { const v = localStorage.getItem('tch_' + k); return v == null ? def : JSON.parse(v); } catch (e) { return def; } },
-  set(k, v) { try { localStorage.setItem('tch_' + k, JSON.stringify(v)); } catch (e) {} },
-  del(k) { try { localStorage.removeItem('tch_' + k); } catch (e) {} },
+  get(k, def) { try { const v = localStorage.getItem('solo_' + k); return v == null ? def : JSON.parse(v); } catch (e) { return def; } },
+  set(k, v) { try { localStorage.setItem('solo_' + k, JSON.stringify(v)); } catch (e) {} },
+  del(k) { try { localStorage.removeItem('solo_' + k); } catch (e) {} },
 };
 
 function toast(msg, kind) {
@@ -701,177 +705,106 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') Zoom.close()
 function fmtAway(ms) { const s = Math.round(ms / 1000); return s < 60 ? s + '초' : fmtMin(Math.round(s / 60)); }
 
 /* =========================================================
-   3. 서버 연결 / 체험 모드
+   3. 내 폰에만 저장 (서버 없음)
    ========================================================= */
-// ★ 구글 Apps Script 웹 앱 주소 (배포 → 웹 앱 URL). 비워 두면 '체험 모드'로 동작해요.
-const API_URL = 'https://script.google.com/macros/s/AKfycbya0u97ktyQmMr-3fG6Ta1MmHZC7AcHBnqD4MWtrP7d5hYJeD-F6X3-oSBNe9jkzjvR/exec';
-const IS_LIVE = !!API_URL && !/[?&]demo/.test(location.search); // 주소 끝에 ?demo 를 붙이면 체험 모드
+// 혼공 앱은 서버가 없어요. 모든 기록은 이 폰(브라우저) 안에만 저장되고, 백업 파일로 다른 폰에 옮길 수 있어요.
+const IS_LIVE = false;
 const DRIVE_URL = 'https://drive.google.com';
-const TOKEN_KEY = IS_LIVE ? 'token' : 'demo_token'; // 실제 로그인과 체험 모드 로그인이 섞이지 않게
+const TOKEN_KEY = 'token';
+const ME = 'me';
+const DB_KEY = 'solo_db';
 
-function api(fn, ...args) {
-  if (!IS_LIVE) return Mock.call(fn, args);
-  // text/plain 으로 보내야 구글 서버가 다른 주소(GitHub)에서 온 요청도 받아 줘요
-  return fetch(API_URL, { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body:JSON.stringify({ fn, args }) })
-    .catch(() => { throw new Error('서버에 연결하지 못했어요. 인터넷 연결을 확인하고 잠시 후 다시 해 주세요.'); })
-    .then(r => { if (!r.ok) throw new Error('서버에 연결하지 못했어요. 잠시 후 다시 해 주세요.'); return r.text(); })
-    .then(txt => {
-      let res;
-      try { res = JSON.parse(txt); } catch (e) { throw new Error('서버 응답이 이상해요. 선생님께 알려 주세요. (Code.gs 새 버전 배포 확인)'); }
-      if (!res.ok) throw new Error(res.error || '알 수 없는 오류가 났어요.');
-      return res.data;
+// 문제 사진은 용량이 커서 IndexedDB(폰 안의 큰 저장소)에 따로 넣어요
+const ImgDB = (() => {
+  let dbp = null;
+  const open = () => dbp || (dbp = new Promise((res, rej) => {
+    const r = indexedDB.open('teachers-solo', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('img');
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  }));
+  const run = async (mode, fn) => {
+    const db = await open();
+    return new Promise((res, rej) => {
+      const t = db.transaction('img', mode);
+      const req = fn(t.objectStore('img'));
+      t.oncomplete = () => res(req && req.result);
+      t.onerror = () => rej(t.error || new Error('사진 저장소에 문제가 생겼어요.'));
     });
-}
-
-// 체험 모드: 구글 서버 없이 이 기기(localStorage)에서만 동작해요.
-const Mock = (() => {
-  const KEY = 'mockdb';
-  const load = () => {
-    const db = store.get(KEY, null);
-    if (!db) return seed();
-    if (!db.questions) { db.questions = seedQuestions(); save(db); }
-    if (!db.settings.examSchedule) { db.settings.examSchedule = []; save(db); }
-    if (!db.questions.some(q => q.id === 'dqp')) { db.questions.push(seedPhotoQuestion()); save(db); }
-    if (!db.questions.some(q => q.id === 'dqe')) { db.questions.push(...seedEssayQuestions()); save(db); }
-    return db;
   };
-  function seedEssayQuestions() {
-    store.set('qimg_dqe2', store.get('qimg_dqp', ''));
-    return [
-      { id:'dqe', d:todayStr(), sid:'20304', name:'최지호', subj:'과학', type:'ESSAY', q:'물이 끓는 동안 계속 가열해도 온도가 일정한 까닭을 서술하시오.',
-        a:'가해 준 열이 물이 수증기로 변하는 기화(상태 변화)에 쓰이기 때문에 온도가 일정하다.', opts:['기화', '상태 변화', '열'], exp:'', st:'공개', reporters:[] },
-      { id:'dqe2', d:todayStr(), sid:'20301', name:'김하늘', subj:'과학', type:'ESSAY', q:'그래프의 B 구간에서 일어나는 일을 서술하시오.',
-        a:'얼음이 녹는 융해가 일어나며, 열을 흡수하지만 온도는 일정하게 유지된다.', opts:['융해', '흡수', '일정'], exp:'', st:'공개', reporters:[], img:1 },
-    ];
-  }
-  // 체험용 사진 문제: 물의 가열 곡선 그래프를 그려서 사진처럼 넣어요
-  function seedPhotoQuestion() {
-    const c = document.createElement('canvas'); c.width = 900; c.height = 620;
-    const g = c.getContext('2d');
-    g.fillStyle = '#fffdf7'; g.fillRect(0, 0, 900, 620);
-    g.fillStyle = '#222'; g.font = 'bold 30px sans-serif'; g.fillText('얼음을 가열할 때의 온도 변화', 210, 55);
-    g.strokeStyle = '#333'; g.lineWidth = 3;
-    g.beginPath(); g.moveTo(110, 90); g.lineTo(110, 540); g.lineTo(840, 540); g.stroke();
-    g.font = '24px sans-serif'; g.fillText('온도(℃)', 20, 100); g.fillText('시간(분)', 740, 585);
-    g.fillText('100', 50, 205); g.fillText('0', 80, 405);
-    g.setLineDash([6, 6]); g.strokeStyle = '#aaa'; g.lineWidth = 2;
-    [[200], [400]].forEach(([yy]) => { g.beginPath(); g.moveTo(110, yy); g.lineTo(840, yy); g.stroke(); });
-    g.setLineDash([]); g.strokeStyle = '#E0457B'; g.lineWidth = 6;
-    g.beginPath(); g.moveTo(110, 500); g.lineTo(230, 400); g.lineTo(420, 400); g.lineTo(560, 200); g.lineTo(800, 200); g.stroke();
-    g.fillStyle = '#1F2B5B'; g.font = 'bold 34px sans-serif';
-    g.fillText('A', 150, 435); g.fillText('B', 310, 385); g.fillText('C', 470, 300); g.fillText('D', 670, 185);
-    store.set('qimg_dqp', c.toDataURL('image/jpeg', .8));
-    return { id:'dqp', d:todayStr(), sid:'20303', name:'박서연', subj:'과학', type:'PHOTO', q:'그래프의 B 구간에서 일어나는 상태 변화의 이름은?', a:'융해', opts:['녹는 것'], exp:'B 구간은 온도가 0℃로 일정해요. 얼음이 녹아 물이 되는 융해가 일어나요.', st:'공개', reporters:[], img:1 };
-  }
-  const save = db => store.set(KEY, db);
-  function seedQuestions() {
-    const t = todayStr();
-    const rows = [
-      ['20301', '김하늘', '과학', 'PAIR', '융해', '고체가 액체로 변하는 현상'],
-      ['20301', '김하늘', '과학', 'PAIR', '응고', '액체가 고체로 변하는 현상'],
-      ['20303', '박서연', '과학', 'PAIR', '기화', '액체가 기체로 변하는 현상'],
-      ['20303', '박서연', '과학', 'PAIR', '액화', '기체가 액체로 변하는 현상'],
-      ['20304', '최지호', '과학', 'PAIR', '승화', '고체와 기체 사이에서 액체를 거치지 않고 바로 변하는 현상'],
-      ['20304', '최지호', '과학', 'OX', '물이 얼음이 되면 부피가 줄어든다.', 'X', [], '물은 얼면 부피가 늘어나요. 그래서 겨울에 수도관이 터지기도 해요.'],
-      ['20302', '이도윤', '과학', 'MC', '빛의 삼원색이 아닌 것은?', '노랑', ['빨강', '초록', '파랑'], '빛의 삼원색은 빨강·초록·파랑이에요.'],
-      ['20305', '정유나', '과학', 'BLANK', '고체가 액체로 변할 때 주위의 열을 흡수한다.', '흡수', [], ''],
-      ['20306', '강민준', '역사', 'OX', '훈민정음은 세종 때 만들어졌다.', 'O', [], ''],
-      ['20306', '강민준', '역사', 'PAIR', '집현전', '세종 때 학자들이 학문을 연구하던 기관'],
-      ['20307', '윤채원', '영어', 'ENG', 'I want to be a person who helps others.', '나는 다른 사람을 돕는 사람이 되고 싶다.'],
-      ['20307', '윤채원', '영어', 'ENG', 'It is important to protect the environment.', '환경을 보호하는 것은 중요하다.'],
-      ['20308', '한시우', '영어', 'ENG', 'If it rains tomorrow, we will stay home.', '내일 비가 오면 우리는 집에 있을 것이다.'],
-      ['20308', '한시우', '영어', 'ENG', 'This is the book that I bought yesterday.', '이것은 내가 어제 산 책이다.'],
-      ['20304', '최지호', '수학', 'MC', '일차방정식 2x + 3 = 11의 해는?', 'x = 4', ['x = 3', 'x = 7', 'x = 5'], '2x = 8 이니까 x = 4'],
-    ];
-    return rows.map((r, i) => ({ id:'dq' + i, d:addDays(t, -(i % 4)), sid:r[0], name:r[1], subj:r[2], type:r[3], q:r[4], a:r[5], opts:r[6] || [], exp:r[7] || '', st:'공개', reporters:[] }))
-      .concat([seedPhotoQuestion()], seedEssayQuestions());
-  }
-  function seed() {
-    const t = todayStr();
-    const names = ['김하늘', '이도윤', '박서연', '최지호', '정유나', '강민준', '윤채원', '한시우'];
-    const db = {
-      settings: { code:'1234', admin:'teacher', studyName:'성적을 부탁해 티처스', subjects:['국어','영어','수학','역사','과학','기술가정','도덕'], examStart:addDays(t, 21), examSchedule:[], classGoalHours:100, dailyStudyXpCap:240 },
-      students: [], profiles: {}, logs: [], questions: seedQuestions(),
-    };
-    const subs = ['국어', '영어', '수학', '역사', '과학'];
-    names.forEach((n, i) => {
-      const sid = String(20301 + i);
-      db.students.push({ sid, name:n, pw:'0000', token:'demo-' + sid });
-      const diligence = 0.35 + (i % 4) * 0.18;
-      for (let k = 13; k >= 1; k--) {
-        if (Math.random() > diligence) continue;
-        const d = addDays(t, -k);
-        const push = (type, v, m, st) => db.logs.push({ id:uid(), ts:d + ' 20:00:00', d, sid, type, v, m, st:st || '' });
-        push('STUDY', 20 + Math.floor(Math.random() * 90), subs[(k + i) % 5]);
-        if (Math.random() < .8) push('PLANNER', 1, '플래너', '승인');
-        if (Math.random() < .7) push('NOTE', 1, '배움노트', '승인');
-        if (Math.random() < .6) push('ROUND', 1, 'x|y|' + k);
-      }
-    });
-    save(db);
-    return db;
-  }
-  function me(db, token) {
-    const s = db.students.find(x => x.token && x.token === token);
-    if (!s) throw new Error('로그인이 만료됐어요. 다시 로그인해 주세요.');
-    return s;
-  }
-  function log(db, s, type, v, m, extra) {
-    const l = Object.assign({ id:uid(), ts:nowStr(), d:todayStr(), sid:s.sid, type, v, m, st:(type === 'PLANNER' || type === 'NOTE') ? '대기' : '' }, extra || {});
+  return {
+    put: (id, data) => run('readwrite', st => st.put(data, id)),
+    get: id => run('readonly', st => st.get(id)),
+    del: id => run('readwrite', st => st.delete(id)),
+    clear: () => run('readwrite', st => st.clear()),
+    all: async () => {
+      const db = await open();
+      return new Promise((res, rej) => {
+        const out = {};
+        const t = db.transaction('img');
+        const cur = t.objectStore('img').openCursor();
+        cur.onsuccess = () => { const c = cur.result; if (c) { out[c.key] = c.value; c.continue(); } };
+        t.oncomplete = () => res(out);
+        t.onerror = () => rej(t.error);
+      });
+    },
+  };
+})();
+
+const Local = (() => {
+  const blank = () => ({ name:'', profile:{}, logs:[], questions:[], history:[] });
+  const load = () => { try { return JSON.parse(localStorage.getItem(DB_KEY)) || blank(); } catch (e) { return blank(); } };
+  const save = db => {
+    try { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+    catch (e) { throw new Error('폰 저장 공간이 꽉 찼어요. 메뉴 → 백업 내려받기를 한 뒤, 지난 시험 기록을 정리해 주세요.'); }
+  };
+  const settings = () => ({ studyName:'티처스 혼공', subjects:ALL_SUBJECTS.filter(n => n !== '기타'), examStart:'', examSchedule:[], classGoalHours:0, dailyStudyXpCap:240 });
+  const need = db => { if (!db.name) throw new Error('처음 화면에서 이름(별명)을 정해 주세요.'); return db; };
+  function log(db, type, v, m, extra) {
+    const l = Object.assign({ id:uid(), ts:nowStr(), d:todayStr(), sid:ME, type, v, m, st:'' }, extra || {});
     db.logs.push(l);
     return l;
   }
-  const pub = l => Object.assign({ id:l.id, ts:l.ts, d:l.d, sid:l.sid, type:l.type, v:l.v, m:l.m, st:l.st }, l.o != null ? { o:l.o } : {});
-  const pubQ = q => ({ id:q.id, d:q.d, sid:q.sid, name:q.name, subj:q.subj, type:q.type, q:q.q, a:q.a, opts:q.opts, exp:q.exp, st:q.st, rep:(q.reporters || []).length, img:q.img ? 1 : 0 });
-  const getImg = id => { const src = store.get('qimg_' + id, ''); if (!src) throw new Error('사진을 찾지 못했어요.'); return src; };
-  const settingsOut = db => { const { code, admin, ...rest } = db.settings; return rest; };
   const H = {
-    register(code, sid, name, pw) {
+    start(name) {
       const db = load();
-      if (String(code) !== db.settings.code) throw new Error('가입코드가 달라요. (체험 모드 가입코드: 1234)');
-      if (!/^\d{5}$/.test(sid)) throw new Error('학번은 숫자 5자리로 써 주세요. (예: 20315)');
-      if (!name.trim()) throw new Error('이름을 확인해 주세요.');
-      if (String(pw).length < 4) throw new Error('비밀번호는 4자리 이상이어야 해요.');
-      const ex = db.students.find(s => s.sid === sid);
-      if (ex && ex.pw) throw new Error('이미 가입된 학번이에요. 비밀번호를 잊었다면 선생님께 말해 주세요.');
-      const token = uid() + uid();
-      if (ex) Object.assign(ex, { name:name.trim(), pw, token }); else db.students.push({ sid, name:name.trim(), pw, token });
-      save(db); return { token };
+      db.name = String(name || '').trim().slice(0, 10);
+      if (!db.name) throw new Error('이름(별명)을 적어 주세요.');
+      save(db); return { token:'local' };
     },
-    login(sid, pw) {
-      const db = load();
-      const s = db.students.find(x => x.sid === String(sid) && x.pw);
-      if (!s) throw new Error('가입되지 않은 학번이에요. 먼저 가입해 주세요.');
-      if (s.pw !== String(pw)) throw new Error('비밀번호가 틀렸어요.');
-      if (!s.token) { s.token = uid() + uid(); save(db); }
-      return { token:s.token };
-    },
-    getState(token) {
-      const db = load(); const s = me(db, token);
-      return { me:{ sid:s.sid, name:s.name }, settings:settingsOut(db), profile:db.profiles[s.sid] || {},
-        students:db.students.filter(x => x.pw).map(x => ({ sid:x.sid, name:x.name })), logs:db.logs.map(pub),
-        questions:db.questions.filter(q => q.st === '공개' || q.st === '보관' || (q.st === '숨김' && q.sid === s.sid)).map(pubQ), today:todayStr() };
+    rename(token, name) { const db = need(load()); db.name = String(name || '').trim().slice(0, 10) || db.name; save(db); return db.name; },
+    getState() {
+      const db = need(load());
+      return { me:{ sid:ME, name:db.name }, settings:settings(), profile:db.profile || {}, students:[{ sid:ME, name:db.name }],
+        logs:db.logs, questions:db.questions, history:db.history || [], today:todayStr() };
     },
     saveStudy(token, subject, minutes, focus) {
-      const db = load(); const s = me(db, token);
+      const db = need(load());
       minutes = Math.floor(minutes);
       if (!(minutes >= 1)) throw new Error('1분 이상 공부해야 저장할 수 있어요.');
       minutes = Math.min(minutes, 300);
-      const l = log(db, s, 'STUDY', minutes, subject, { st:focus && minutes >= 25 ? '집중' : '' }); save(db); return pub(l);
+      const l = log(db, 'STUDY', minutes, subject, { st:focus && minutes >= 25 ? '집중' : '' }); save(db); return l;
     },
     editStudy(token, id, minutes) {
-      const db = load(); const s = me(db, token);
+      const db = need(load());
       const l = db.logs.find(x => x.id === id);
-      if (!l || l.sid !== s.sid || l.type !== 'STUDY') throw new Error('내 공부 기록만 고칠 수 있어요.');
+      if (!l || l.type !== 'STUDY') throw new Error('공부 기록을 찾지 못했어요.');
       minutes = Math.floor(minutes);
       if (!(minutes >= 0)) throw new Error('시간을 숫자로 써 주세요.');
       if (minutes > l.v) throw new Error('공부시간은 줄이기만 할 수 있어요.');
       if (l.d < addDays(todayStr(), -7)) throw new Error('일주일 안의 기록만 고칠 수 있어요.');
       if (l.o == null) l.o = l.v;
-      l.v = minutes; save(db); return pub(l);
+      l.v = minutes; save(db); return l;
     },
-    addQuestion(token, q) {
-      const db = load(); const s = me(db, token);
+    // 오늘 플래너·배움노트를 썼는지 체크 (한 번 더 누르면 취소)
+    checkDaily(token, kind) {
+      const db = need(load());
+      const i = db.logs.findIndex(l => l.type === kind && l.d === todayStr());
+      if (i >= 0) { db.logs.splice(i, 1); save(db); return null; }
+      const l = log(db, kind, 1, kind === 'PLANNER' ? '플래너' : '배움노트', { st:'승인' }); save(db); return l;
+    },
+    async addQuestion(token, q) {
+      const db = need(load());
       const c = (v, n) => String(v == null ? '' : v).trim().slice(0, n);
       const type = q.type, subj = c(q.subject, 20), a = c(q.a, 200), exp = c(q.exp, 300);
       const text = c(q.q, 300) || (type === 'PHOTO' ? '사진 속 문제를 풀어 봐!' : '');
@@ -888,146 +821,93 @@ const Mock = (() => {
       if (type === 'BLANK' && !text.includes(a)) throw new Error('빈칸으로 만들 말이 문장 안에 그대로 있어야 해요.');
       if (type === 'ENG' && !/[A-Za-z]/.test(text)) throw new Error('영어 문장을 써 주세요.');
       if (type !== 'MC' && type !== 'PHOTO' && type !== 'ESSAY') opts = [];
-      const nq = { id:uid(), d:todayStr(), sid:s.sid, name:s.name, subj, type, q:text, a, opts, exp, st:'공개', reporters:[] };
+      const nq = { id:uid(), d:todayStr(), sid:ME, name:db.name, subj, type, q:text, a, opts, exp, st:'공개', rep:0, img:0 };
       if (type === 'PHOTO' || (type === 'ESSAY' && q.image)) {
         if (!String(q.image || '').startsWith('data:image')) throw new Error('문제 사진을 올려 주세요.');
-        store.set('qimg_' + nq.id, q.image);
-        if (!store.get('qimg_' + nq.id, '')) throw new Error('체험 모드 저장 공간이 꽉 찼어요. 위의 [처음부터 다시]를 눌러 주세요.');
+        await ImgDB.put(nq.id, q.image);
         nq.img = 1;
       }
-      db.questions.push(nq); save(db); return pubQ(nq);
+      db.questions.push(nq); save(db); return nq;
     },
-    getQuestionImage(token, id) { const db = load(); me(db, token); return getImg(id); },
-    adminGetQuestionImage(pw, id) { const db = load(); if (pw !== db.settings.admin) throw new Error('선생님 비밀번호가 틀렸어요.'); return getImg(id); },
-    deleteQuestion(token, id) {
-      const db = load(); const s = me(db, token);
-      const q = db.questions.find(x => x.id === id);
-      if (!q || q.sid !== s.sid) throw new Error('내가 만든 문제만 지울 수 있어요.');
-      q.st = '삭제'; save(db); return true;
+    async getQuestionImage(token, id) { const src = await ImgDB.get(id); if (!src) throw new Error('사진을 찾지 못했어요.'); return src; },
+    async deleteQuestion(token, id) {
+      const db = need(load());
+      db.questions = db.questions.filter(q => q.id !== id); save(db);
+      try { await ImgDB.del(id); } catch (e) {}
+      return true;
     },
-    reportQuestion(token, id) {
-      const db = load(); const s = me(db, token);
-      const q = db.questions.find(x => x.id === id); if (!q) throw new Error('문제를 찾지 못했어요.');
-      q.reporters = q.reporters || [];
-      if (!q.reporters.includes(s.sid)) q.reporters.push(s.sid);
-      if (q.reporters.length >= 3 && q.st === '공개') q.st = '숨김';
-      save(db); return q.reporters.length;
-    },
-    savePlay(token, game, total, ids, half) {
-      const db = load(); const s = me(db, token);
-      const valid = new Set(db.questions.filter(q => q.st === '공개').map(q => q.id));
-      ids = uniq(ids.map(String)).filter(id => valid.has(id));
-      half = uniq((half || []).map(String)).filter(id => valid.has(id) && !ids.includes(id));
-      if (!(total >= 1 && total <= 40) || ids.length + half.length > total) throw new Error('게임 결과가 이상해요.');
-      const l = log(db, s, 'QPLAY', ids.length, JSON.stringify({ g:game, n:total, ids, half })); save(db); return pub(l);
-    },
-    adminSaveExam(pw, exam) {
-      const db = load(); if (pw !== db.settings.admin) throw new Error('선생님 비밀번호가 틀렸어요.');
-      const isDate = v => /^\d{4}-\d{2}-\d{2}$/.test(String(v || ''));
-      const subjects = (exam.subjects || []).map(s => ({ name:String(s.name || '').trim().slice(0, 20), date:isDate(s.date) ? s.date : '', period:String(s.period || ''), range:String(s.range || '').trim().slice(0, 100),
-        teachers:(s.teachers || []).map(t => ({ name:String(t.name || '').trim().slice(0, 10), range:String(t.range || '').trim().slice(0, 100) })).filter(t => t.name).slice(0, 8) })).filter(s => s.name);
-      if (!subjects.length) throw new Error('과목을 하나 이상 넣어 주세요.');
-      const dates = subjects.map(s => s.date).filter(Boolean).sort();
-      Object.assign(db.settings, { subjects:subjects.map(s => s.name), examStart:isDate(exam.start) ? exam.start : (dates[0] || ''), examSchedule:subjects });
-      save(db); return settingsOut(db);
-    },
-    adminSaveClass(pw, key, timetable) {
-      const db = load(); if (pw !== db.settings.admin) throw new Error('선생님 비밀번호가 틀렸어요.');
-      if (!/^\d-\d{1,2}$/.test(key)) throw new Error('반은 "학년-반" 모양으로 적어 주세요. (예: 2-3)');
-      db.settings.classes = db.settings.classes || {};
-      if (Array.isArray(timetable) && timetable.some(c => c.some(Boolean))) db.settings.classes[key] = { timetable };
-      else delete db.settings.classes[key];
-      save(db); return settingsOut(db);
-    },
-    adminSetQuestionStatus(pw, id, st) {
-      const db = load(); if (pw !== db.settings.admin) throw new Error('선생님 비밀번호가 틀렸어요.');
-      const q = db.questions.find(x => x.id === id); if (q) { q.st = st; if (st === '공개') q.reporters = []; } save(db); return true;
+    // 게임 결과: 맞힌 문제(ids) · 서술형 부분 정답(half) · 틀린 문제(wrong)
+    savePlay(token, game, total, ids, half, wrong) {
+      const db = need(load());
+      const valid = new Set(db.questions.map(q => q.id));
+      const clean = list => uniq((list || []).map(String)).filter(id => valid.has(id));
+      ids = clean(ids); half = clean(half).filter(id => !ids.includes(id)); wrong = clean(wrong).filter(id => !ids.includes(id));
+      const l = log(db, 'QPLAY', ids.length, JSON.stringify({ g:game, n:total, ids, half, wrong })); save(db); return l;
     },
     readTip(token, tipId) {
-      const db = load(); const s = me(db, token);
-      if (db.logs.some(l => l.sid === s.sid && l.type === 'TIP' && l.m === tipId)) return null;
-      const l = log(db, s, 'TIP', 1, tipId); save(db); return pub(l);
+      const db = need(load());
+      if (db.logs.some(l => l.type === 'TIP' && l.m === tipId)) return null;
+      const l = log(db, 'TIP', 1, tipId); save(db); return l;
     },
     saveProfile(token, profile, key) {
-      const db = load(); const s = me(db, token);
-      profile.rounds = (db.profiles[s.sid] || {}).rounds || {};
-      profile.dan = (db.profiles[s.sid] || {}).dan || {};
-      db.profiles[s.sid] = profile;
+      const db = need(load());
+      profile.rounds = (db.profile || {}).rounds || {};
+      profile.dan = (db.profile || {}).dan || {};
+      db.profile = profile;
       let out = null;
-      if (['time', 'exam', 'books'].includes(key) && !db.logs.some(l => l.sid === s.sid && l.type === 'SETUP' && l.m === key)) out = pub(log(db, s, 'SETUP', 1, key));
+      if (['time', 'exam', 'books'].includes(key) && !db.logs.some(l => l.type === 'SETUP' && l.m === key)) out = log(db, 'SETUP', 1, key);
       save(db); return out;
     },
     addRound(token, key, delta) {
-      const db = load(); const s = me(db, token);
-      const p = db.profiles[s.sid] = db.profiles[s.sid] || {};
+      const db = need(load());
+      const p = db.profile = db.profile || {};
       p.rounds = p.rounds || {};
       const before = p.rounds[key] || 0, after = Math.max(0, Math.min(10, before + (delta > 0 ? 1 : -1)));
       if (after === before) return { count:after, log:null };
       p.rounds[key] = after;
-      const l = log(db, s, 'ROUND', delta > 0 ? 1 : -1, key); save(db);
-      return { count:after, log:pub(l) };
+      const l = log(db, 'ROUND', delta > 0 ? 1 : -1, key); save(db);
+      return { count:after, log:l };
     },
     setDan(token, key, step, on) {
-      const db = load(); const s = me(db, token);
-      const p = db.profiles[s.sid] = db.profiles[s.sid] || {};
+      const db = need(load());
+      const p = db.profile = db.profile || {};
       p.dan = p.dan || {};
       const steps = (p.dan[key] || [false, false, false]).slice(0, 3);
       if (!!steps[step] === !!on) return { steps, log:null };
       steps[step] = !!on; p.dan[key] = steps;
-      const l = log(db, s, 'DAN', on ? 1 : -1, key + '#' + step); save(db);
-      return { steps, log:pub(l) };
+      const l = log(db, 'DAN', on ? 1 : -1, key + '#' + step); save(db);
+      return { steps, log:l };
     },
-    adminNewSeason(pw, opts) {
-      const db = load(); if (pw !== db.settings.admin) throw new Error('선생님 비밀번호가 틀렸어요.');
-      const label = String(opts.label || todayStr()).slice(0, 30);
-      db.archives = (db.archives || []).concat([{ label, students:db.students.length, logs:db.logs.length }]);
-      db.students = []; db.profiles = {}; db.logs = [];
-      if (opts.keepQuestions === false) db.questions = [];
-      else db.questions.forEach(q => { if (q.st === '공개' || !q.st) q.st = '보관'; });
-      db.settings.code = '1234'; // 체험 모드는 안내 문구와 맞게 그대로 (실제 서버는 새 번호를 만들어요)
-      db.settings.examSchedule = []; db.settings.examStart = ''; db.settings.classes = {};
-      if (opts.studyName) db.settings.studyName = String(opts.studyName).slice(0, 30);
-      save(db);
-      return { code:db.settings.code, archiveUrl:'', archiveName:'티처스 보관 - ' + label + ' (체험 모드라 실제 파일은 안 만들어져요)' };
+    // 새 시험 준비: 지난 시험(과목·범위·회독·단권화)은 기록으로 남기고 새로 시작해요. 공부시간·문제는 그대로.
+    newExam(token, label) {
+      const db = need(load());
+      const p = db.profile || {};
+      db.history = (db.history || []).concat([{ label:String(label || todayStr()).slice(0, 30), date:todayStr(), exam:p.exam || null, rounds:p.rounds || {}, dan:p.dan || {} }]);
+      db.profile = { avail:p.avail, timetable:p.timetable }; // 이미 받은 XP는 그대로 둬요
+      save(db); return true;
     },
-    async uploadPhoto(token, kind, dataUrl) {
-      const thumb = await dataUrlThumb(dataUrl);
-      const db = load(); const s = me(db, token);
-      const l = log(db, s, kind, 1, kind === 'PLANNER' ? '플래너' : '배움노트', { thumb });
-      save(db); return pub(l);
+    async exportAll() {
+      const db = need(load());
+      return { app:'teachers-solo', v:1, exported:nowStr(), db, images:await ImgDB.all() };
     },
-    adminGetData(pw) {
-      const db = load();
-      if (pw !== db.settings.admin) throw new Error('선생님 비밀번호가 틀렸어요. (체험 모드: teacher)');
-      return { settings:settingsOut(db), students:db.students.filter(x => x.pw).map(x => ({ sid:x.sid, name:x.name })),
-        logs:db.logs.map(l => Object.assign(pub(l), { thumb:l.thumb || '' })),
-        questions:db.questions.filter(q => q.st !== '삭제').map(pubQ), today:todayStr() };
+    async importAll(token, data) {
+      if (!data || data.app !== 'teachers-solo' || !data.db) throw new Error('티처스 혼공 백업 파일이 아니에요.');
+      save(data.db);
+      await ImgDB.clear();
+      for (const [k, v] of Object.entries(data.images || {})) await ImgDB.put(k, v);
+      return { token:'local' };
     },
-    adminSetStatus(pw, id, st) {
-      const db = load(); if (pw !== db.settings.admin) throw new Error('선생님 비밀번호가 틀렸어요.');
-      const l = db.logs.find(x => x.id === id); if (l) l.st = st; save(db); return true;
-    },
-    adminResetPassword(pw, sid) {
-      const db = load(); if (pw !== db.settings.admin) throw new Error('선생님 비밀번호가 틀렸어요.');
-      const s = db.students.find(x => x.sid === sid); if (s) { s.pw = ''; s.token = ''; } save(db); return true;
-    },
+    async resetAll() { localStorage.removeItem(DB_KEY); try { await ImgDB.clear(); } catch (e) {} return true; },
   };
-  function dataUrlThumb(dataUrl) {
-    return new Promise(res => {
-      const img = new Image();
-      img.onload = () => { const s = Math.min(1, 240 / Math.max(img.width, img.height)); const c = document.createElement('canvas'); c.width = img.width * s; c.height = img.height * s; c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); res(c.toDataURL('image/jpeg', .6)); };
-      img.onerror = () => res('');
-      img.src = dataUrl;
-    });
-  }
   return {
     call(fn, args) {
-      return new Promise((res, rej) => setTimeout(async () => {
-        try { res(JSON.parse(JSON.stringify(await H[fn](...args)))); } catch (e) { rej(e); }
-      }, 150));
+      return Promise.resolve()
+        .then(() => { if (!H[fn]) throw new Error('없는 기능이에요.'); return H[fn](...args); })
+        .then(r => r == null ? r : JSON.parse(JSON.stringify(r)));
     },
   };
 })();
+function api(fn, ...args) { return Local.call(fn, args); }
 
 /* =========================================================
    4. 상태 · 점수 계산
@@ -1055,28 +935,17 @@ function defaultProfile(p) {
   return syncExam(p);
 }
 const newSubject = name => ({ id:uid(), name, target:'', date:'', period:'', range:'', goal:3, units:[], books:[{ id:uid(), name:'교과서' }], danOn:!NO_DAN_DEFAULT.includes(name), danUnits:[] });
-
-// 반 = 학번 앞 세 자리 (예: 20315 → '2-3' = 2학년 3반)
-const classOf = sid => /^\d{5}$/.test(String(sid)) ? String(sid)[0] + '-' + (+String(sid).slice(1, 3)) : '';
-const classLabel = key => { const [g, c] = String(key).split('-'); return `${g}학년 ${c}반`; };
-const myClassCfg = () => (S.settings && S.settings.classes && S.me && S.settings.classes[classOf(S.me.sid)]) || null;
-// 선생님이 정한 시험 일정 (전체 공통)
 const teacherSchedule = () => (S.settings && S.settings.examSchedule) || [];
-const teacherExamStart = () => (S.settings && S.settings.examStart) || '';
-// 선생님이 넣어 준 우리 반 시간표 (없으면 null)
-const classTimetable = () => { const c = myClassCfg(); return c && c.timetable && c.timetable.some(col => col.some(Boolean)) ? c.timetable : null; };
-// 실제로 보여 줄 시간표: 학생이 직접 고쳤으면 학생 것, 아니면 선생님 것
-const ttGrid = () => { const tt = S.profile.timetable, c = classTimetable(); return (!tt.mine && c) ? c : tt.grid; };
 
 // 선생님이 정한 시험 일정(과목·날짜·교시·범위)을 내 계획에 자동으로 채워요
 function syncExam(p) {
   const sch = teacherSchedule();
   if (!sch.length) return p;
-  if (teacherExamStart() && !p.exam.myStart) p.exam.start = teacherExamStart();
+  if (S.settings.examStart) p.exam.start = S.settings.examStart;
   sch.forEach(t => {
     let s = p.exam.subjects.find(x => x.name === t.name);
     if (!s) { s = newSubject(t.name); p.exam.subjects.push(s); }
-    if (!s.myDate) { s.date = t.date; s.period = t.period; } // 학생이 직접 고친 날짜는 그대로 둬요
+    s.date = t.date; s.period = t.period;
     // 선생님이 여러 명이면 학생이 고른 선생님의 범위를, 아니면 과목 공통 범위를 써요
     s.teacherList = (t.teachers || []).map(x => x.name);
     if (s.teacherList.length === 1) s.teacher = s.teacherList[0];
@@ -1134,7 +1003,7 @@ function computeStats(sid, logs, cap, qs) {
     const x = day(l.d);
     if (l.type === 'QPLAY') {
       const p = playInfo(l);
-      const friend = id => owner[id] && owner[id] !== sid; // 내 문제는 XP 없음
+      const friend = id => !!owner[id]; // 혼공 앱: 내가 만든 문제를 맞혀도 XP
       const got = p.ids.filter(friend).length;
       const half = (p.half || []).filter(friend).length; // 서술형 부분 정답
       x.qCorrect += got;
@@ -1262,14 +1131,14 @@ function render() {
   const app = $('#app');
   if (S.view === 'admin') { app.innerHTML = viewAdmin(); return; }
   if (!S.me) { app.innerHTML = viewLogin(); return; }
-  const views = { home:viewHome, timer:viewTimer, upload:viewUpload, rounds:viewRounds, rank:viewRank, tips:viewTips, games:viewGames,
+  const views = { home:viewHome, timer:viewTimer, upload:viewUpload, rounds:viewRounds, stats:viewStats, tips:viewTips, games:viewGames,
     qmake:viewQmake, play:viewPlay, setup:viewSetup, 'setup-time':viewSetupTime, 'setup-exam':viewSetupExam, 'setup-books':viewSetupBooks };
   const body = (views[S.view] || viewHome)();
   const examDday = ddayText(S.profile.exam.start || S.settings.examStart);
   const unread = TIPS.filter(t => !myStats().tips.has(t.id)).length;
   app.innerHTML = `
     <header><div class="wrap">
-      <div class="brand grow"><small>나미쌤과 함께하는 4주 공부방법</small>${esc(S.settings.studyName)}</div>
+      <div class="brand grow"><small>졸업 후에도 나미쌤 공부법으로 혼자서</small>${esc(S.settings.studyName)}</div>
       <button id="hdrTimer" class="chip timer hidden" data-act="go" data-v="timer"></button>
       ${examDday ? `<span class="chip dday">시험 ${examDday}</span>` : ''}
       <button class="iconbtn" data-act="menu" aria-label="메뉴">☰</button>
@@ -1277,37 +1146,33 @@ function render() {
     <main><div class="wrap">${body}</div></main>
     <button class="fab" data-act="go" data-v="tips" aria-label="나미쌤 꿀팁">${MASCOT}${unread ? `<span class="badge">${unread}</span>` : ''}</button>
     <nav class="tabs"><div class="wrap">
-      ${[['home','🏠','홈'],['timer','⏱️','타이머'],['upload','📸','인증'],['rounds','📚','회독'],['games','🎮','게임'],['rank','🏆','랭킹']]
+      ${[['home','🏠','홈'],['timer','⏱️','타이머'],['upload','✅','체크'],['rounds','📚','회독'],['games','🎮','게임'],['stats','📊','공부량']]
         .map(([v, ic, n]) => `<button class="${({ qmake:'games', play:'games' }[S.view] || S.view) === v ? 'on' : ''}" data-act="go" data-v="${v}"><span class="ic">${ic}</span>${n}</button>`).join('')}
     </div></nav>`;
   if (S.view === 'timer') paintTimer();
   if (S.view === 'setup-time') bindAvailGrid();
 }
 
-/* ---------- 로그인 / 가입 ---------- */
+/* ---------- 처음 화면 (이름만 정하고 시작) ---------- */
 function viewLogin() {
-  const mode = S.loginMode || 'login';
   return `<div class="wrap">
     <div class="login-hero">${MASCOT}
-      <div class="tag2">→ 성적을 부탁해 ←</div>
-      <h1>티처스</h1>
-      <div class="sub">공부, 어떻게 해야 할지 막막하다면?<br>나미쌤과 하나씩 해 보자!</div>
+      <div class="tag2">→ 졸업 후에도 혼자서 ←</div>
+      <h1>티처스 혼공</h1>
+      <div class="sub">나미쌤 공부법 그대로,<br>이제 스스로 해 보자!</div>
     </div>
     <div class="card">
-      <div class="toggle" style="width:100%;margin-bottom:14px">
-        <button style="flex:1" class="${mode === 'login' ? 'on' : ''}" data-act="loginMode" data-v="login">로그인</button>
-        <button style="flex:1" class="${mode === 'join' ? 'on' : ''}" data-act="loginMode" data-v="join">처음이에요 (가입)</button>
-      </div>
-      <form id="authForm" data-mode="${mode}">
-        ${mode === 'join' ? `<label class="field"><span>가입코드 (선생님이 알려준 번호)</span><input class="input" name="code" inputmode="numeric" autocomplete="off" required></label>` : ''}
-        <label class="field"><span>학번 5자리 (예: 20315)</span><input class="input" name="sid" inputmode="numeric" maxlength="5" pattern="\\d{5}" autocomplete="username" required></label>
-        ${mode === 'join' ? `<label class="field"><span>이름</span><input class="input" name="name" maxlength="10" required></label>` : ''}
-        <label class="field"><span>비밀번호 ${mode === 'join' ? '(4자리 이상, 꼭 기억해요!)' : ''}</span><input class="input" name="pw" type="password" minlength="4" autocomplete="${mode === 'join' ? 'new-password' : 'current-password'}" required></label>
-        <button class="btn block" type="submit">${mode === 'join' ? '가입하고 시작하기 🌱' : '로그인'}</button>
+      <form id="startForm">
+        <label class="field"><span>이름 또는 별명</span><input class="input" name="name" maxlength="10" required autocomplete="off"></label>
+        <button class="btn block" type="submit">시작하기 🌱</button>
       </form>
-      ${!IS_LIVE ? `<p class="small muted center mt12">체험 모드 가입코드: <b>1234</b></p>` : ''}
+      <p class="small muted" style="margin:12px 0 0">🔒 기록은 <b>이 폰 안에만</b> 저장돼요. 로그인도 서버도 없어요.<br>📴 한 번 열고 나면 <b>인터넷이 없어도</b> 열려요. <b>홈 화면에 추가</b>하면 앱처럼 써요.<br>폰을 바꿀 땐 메뉴(☰)의 <b>백업 내려받기</b>로 옮길 수 있어요.</p>
     </div>
-    <p class="center"><button class="linkbtn" data-act="adminOpen">👩‍🏫 선생님 페이지</button></p>
+    <div class="card small">
+      <b>📦 예전에 쓰던 기록이 있어요</b><br><span class="muted">백업 파일(.json)을 고르면 그대로 이어서 쓸 수 있어요.</span>
+      <button class="btn ghost block mt8" data-act="importPick">백업 파일 불러오기</button>
+    </div>
+    <input type="file" accept=".json,application/json" id="importFile" class="hidden">
   </div>`;
 }
 
@@ -1319,12 +1184,10 @@ function viewHome() {
   const setupDone = ['time', 'exam', 'books'].filter(k => st.setups.has(k)).length;
   const line = S.namiLine != null ? NAMI_LINES[S.namiLine] : NAMI_LINES[Math.floor(Math.random() * NAMI_LINES.length)];
   const tip = S.homeTip || (S.homeTip = (TIPS.filter(x => !st.tips.has(x.id))[0] || TIPS[Math.floor(Math.random() * TIPS.length)]));
-  const classMin = S.logs.filter(l => l.type === 'STUDY').reduce((a, l) => a + l.v, 0);
-  const goal = S.settings.classGoalHours * 60;
   const badges = earnedBadges(st);
   const missions = [
-    { done:t.planner, e:'📒', n:'오늘 플래너 인증', xp:'+' + XP.PLANNER, go:'upload' },
-    { done:t.note, e:'📝', n:'배움노트 인증', xp:'+' + XP.NOTE, go:'upload' },
+    { done:t.planner, e:'📒', n:'오늘 플래너 쓰기', xp:'+' + XP.PLANNER, go:'upload' },
+    { done:t.note, e:'📝', n:'배움노트 쓰기', xp:'+' + XP.NOTE, go:'upload' },
     { done:t.study >= 30, e:'⏱️', n:`공부 30분 (${Math.min(t.study, 30)}/30분)`, xp:'1분=1XP', go:'timer' },
     { done:t.rounds > 0, e:'🔁', n:'회독 1칸 채우기', xp:'+' + XP.ROUND, go:'rounds' },
     { done:t.qmade > 0, e:'✍️', n:'나만의 문제 1개 만들기', xp:'+' + XP.QMAKE, go:'qmake' },
@@ -1344,7 +1207,7 @@ function viewHome() {
         </div>
       </div>
       <div class="stats3">
-        <div><b>🔥 ${st.streak}일</b><span>연속 인증</span></div>
+        <div><b>🔥 ${st.streak}일</b><span>연속 공부</span></div>
         <div><b>${fmtMin(st.week)}</b><span>이번 주 공부</span></div>
         <div><b>${st.xp}</b><span>총 XP</span></div>
       </div>
@@ -1371,10 +1234,9 @@ function viewHome() {
       <h3 style="margin:4px 0 0">${tip.e} ${esc(tip.t)}</h3>
     </div>
 
-    <div class="card">
-      <div class="row between"><h3 style="margin:0">🤝 우리 반 공부시간 모으기</h3><span class="small muted">목표 ${S.settings.classGoalHours}시간</span></div>
-      <div class="bar blue mt8"><i style="width:${Math.min(100, classMin / goal * 100)}%"></i></div>
-      <div class="small muted mt8">지금까지 <b style="color:var(--blue)">${fmtMin(classMin)}</b> · ${Math.min(100, Math.round(classMin / goal * 100))}% 달성</div>
+    <div class="card" data-act="go" data-v="stats" style="cursor:pointer">
+      <div class="row between"><h3 style="margin:0">📊 내 공부량</h3><span class="small muted">자세히 보기 →</span></div>
+      <div class="small muted mt8">누적 공부 <b style="color:var(--blue)">${fmtMin(st.studyTotal)}</b> · 오늘 ${fmtMin(t.study)} · 이번 주 ${fmtMin(st.week)}</div>
     </div>
 
     <div class="sec-title"><h2>내 배지</h2><span class="small muted">${badges.size} / ${BADGES.length}</span></div>
@@ -1457,29 +1319,29 @@ function paintTimer() {
     `<button class="btn" data-act="timerResume">▶ 계속</button><button class="btn blue" data-act="timerSave">■ 끝내고 저장</button><button class="btn ghost sm" data-act="timerReset">↺ 초기화</button>`;
 }
 
-/* ---------- 사진 인증 ---------- */
+/* ---------- 오늘 체크 (플래너·배움노트) ---------- */
 function viewUpload() {
   const st = myStats();
   const kinds = [
-    { k:'PLANNER', e:'📒', n:'오늘의 플래너', d:'오늘 쓴 나미플래너 사진', xp:XP.PLANNER, done:st.today.planner, s:st.today.plannerSt },
-    { k:'NOTE', e:'📝', n:'배움노트', d:'오늘 배운 내용 정리한 노트 사진', xp:XP.NOTE, done:st.today.note, s:st.today.noteSt },
+    { k:'PLANNER', e:'📒', n:'오늘 플래너 썼어요', d:'시간표·시험 범위를 보고 오늘 할 일을 단원·분량으로!', xp:XP.PLANNER, done:st.today.planner },
+    { k:'NOTE', e:'📝', n:'오늘 배움노트 썼어요', d:'오늘 배운 것, 시험 범위 어디쯤인지까지 한두 줄로!', xp:XP.NOTE, done:st.today.note },
   ];
-  const mine = S.logs.filter(l => l.sid === S.me.sid && (l.type === 'PLANNER' || l.type === 'NOTE')).slice(-14).reverse();
+  // 최근 14일 체크 현황
+  const days = Array.from({ length:14 }, (_, i) => addDays(todayStr(), i - 13));
   return `${ttViewer()}${rangeViewer()}
-    ${kinds.map(x => `<div class="card upl">
+    ${kinds.map(x => `<div class="card ${x.done ? '' : 'upl'}" style="${x.done ? 'background:var(--green-soft);border-color:#BDE6CE' : ''}">
       <div class="row"><span style="font-size:30px">${x.e}</span><div class="grow"><h3 style="margin:0">${x.n}</h3><div class="small muted">${x.d}</div></div><span class="xp">+${x.xp} XP</span></div>
-      ${x.done ? `<div class="mt8"><span class="tag ${x.s === '승인' ? 'ok' : 'wait'}">✅ 오늘 인증 완료 · ${x.s === '승인' ? '선생님 확인 완료' : '선생님 확인 대기'}</span></div>` : ''}
-      ${S.pending[x.k] ? `<div class="pv"><img src="${S.pending[x.k]}" alt="미리보기"></div>
-        <div class="row mt12"><button class="btn ghost grow" data-act="pickPhoto" data-v="${x.k}">다시 고르기</button><button class="btn grow" data-act="sendPhoto" data-v="${x.k}" id="send-${x.k}">올리기</button></div>`
-      : `<button class="btn ${x.done ? 'ghost' : ''} block mt12" data-act="pickPhoto" data-v="${x.k}">📷 ${x.done ? '한 장 더 올리기' : '사진 찍기 / 고르기'}</button>`}
-      <input type="file" accept="image/&#42;" id="file-${x.k}" data-kind="${x.k}" class="hidden">
+      <button class="btn ${x.done ? 'ghost' : ''} block mt12" data-act="checkDaily" data-v="${x.k}">${x.done ? '✅ 오늘 완료! (잘못 눌렀으면 다시 눌러 취소)' : '☑️ 다 썼어요!'}</button>
     </div>`).join('')}
     <div class="card">
-      <h3>내 인증 기록</h3>
-      ${mine.length ? `<div class="list">${mine.map(l => `<div class="it"><span>${l.type === 'PLANNER' ? '📒' : '📝'}</span><span class="grow">${l.d.slice(5).replace('-', '/')} ${l.type === 'PLANNER' ? '플래너' : '배움노트'}</span>
-        <span class="tag ${l.st === '승인' ? 'ok' : l.st === '반려' ? 'no' : 'wait'}">${l.st === '반려' ? '반려 · 다시 올려 줘' : l.st || '대기'}</span></div>`).join('')}</div>` : `<p class="small muted" style="margin:0">첫 인증을 올려 보자! 📸</p>`}
-    </div>
-    <p class="small muted center">선생님이 사진을 확인해요. 반려되면 XP가 빠져요.</p>`;
+      <h3 style="margin-top:0">최근 2주 체크</h3>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:11px">
+        ${days.map(d => { const x = st.days[d] || emptyDay(); const dd = parseYmd(d);
+          return `<div style="padding:5px 0;border-radius:9px;background:${d === todayStr() ? 'var(--yellow-soft)' : '#FAF7F2'}">
+            <div class="muted">${dd.getMonth() + 1}/${dd.getDate()}</div><div style="font-size:14px">${x.planner ? '📒' : '·'}${x.note ? '📝' : '·'}</div></div>`; }).join('')}
+      </div>
+      <p class="small muted" style="margin:8px 0 0">📒 플래너 · 📝 배움노트. 매일 채워 보자!</p>
+    </div>`;
 }
 
 /* ---------- 회독판 ---------- */
@@ -1533,15 +1395,12 @@ function ttSubjects() {
   return uniq(exam.concat(ALL_SUBJECTS.filter(n => n !== '기타'), TT_EXTRA));
 }
 function ttEditor() {
-  if (!S.ttDraft) S.ttDraft = JSON.parse(JSON.stringify(ttGrid()));
+  if (!S.ttDraft) S.ttDraft = JSON.parse(JSON.stringify(S.profile.timetable.grid));
   const subs = ttSubjects();
   if (S.ttBrush == null) S.ttBrush = subs[0];
   return `<div class="card">
     <h3 style="margin-top:0">📅 우리 반 시간표</h3>
     <p class="small muted" style="margin-top:0">과목을 고르고 칸을 눌러 채워요 (같은 칸을 한 번 더 누르면 지워져요). <b>인증 탭</b>에서 요일별로 보면서 플래너를 짤 수 있어요!</p>
-    ${classTimetable() ? `<div class="card blue small" style="padding:8px 12px;margin:0 0 10px;box-shadow:none">
-      👩‍🏫 <b>선생님이 넣어 준 ${classLabel(classOf(S.me.sid))} 시간표</b>가 들어 있어요. 바뀐 게 있으면 고쳐도 돼요.
-      ${JSON.stringify(S.ttDraft) !== JSON.stringify(classTimetable()) ? '<br><button class="linkbtn" data-act="ttReset">↺ 선생님 시간표로 되돌리기</button>' : ''}</div>` : ''}
     <div class="palette">${subs.map(n => `<button class="${S.ttBrush === n ? 'on' : ''}" data-act="ttBrush" data-v="${esc(n)}"><i style="background:${subjColor(n)}"></i>${esc(n)}</button>`).join('')}
       <button class="${S.ttBrush === '' ? 'on' : ''}" data-act="ttBrush" data-v=""><i style="background:#fff"></i>지우개</button></div>
     <table class="tt mt12"><thead><tr><th></th>${TT_DAYS.map(d => `<th>${d}</th>`).join('')}</tr></thead>
@@ -1552,7 +1411,7 @@ function ttEditor() {
 
 // 📅 요일별 시간표 보기 (인증 탭, 접었다 펴기)
 function ttViewer() {
-  const g = ttGrid();
+  const g = S.profile.timetable.grid;
   const has = g.some(col => col.some(Boolean));
   const open = store.get('tt_open', true);
   const di = (new Date().getDay() + 6) % 7; // 0=월 … 6=일
@@ -1587,7 +1446,7 @@ function rangeViewer() {
   const order = s => (s.date || '9999-99-99') + '|' + (s.period || '9');
   const subs = S.profile.exam.subjects.slice().sort((a, b) => order(a) < order(b) ? -1 : order(a) > order(b) ? 1 : 0);
   const di = (new Date().getDay() + 6) % 7;
-  const todaySubs = di < 5 ? ttGrid()[di].filter(Boolean) : [];
+  const todaySubs = di < 5 ? S.profile.timetable.grid[di].filter(Boolean) : [];
   const start = S.profile.exam.start || S.settings.examStart;
   return `<div class="card pink">
     <button class="tthead" data-act="rangeToggle"><span class="jua grow" style="font-size:17px">📌 시험 범위${start ? ` <span class="chip dday" style="font-size:12px;vertical-align:2px">${ddayText(start)}</span>` : ''}</span><span class="small muted">${open ? '접기 ▲' : '펼치기 ▼'}</span></button>
@@ -1643,40 +1502,115 @@ function viewDan(subs) {
     }).join('')}`;
 }
 
-/* ---------- 랭킹 ---------- */
-function viewRank() {
-  const cap = S.settings.dailyStudyXpCap;
-  const all = S.students.map(p => Object.assign({ p }, computeStats(p.sid, S.logs, cap)));
-  const tabs = [
-    { k:'week', n:'⏱ 이번 주 공부', val:s => s.week, fmt:fmtMin, desc:'월요일부터 지금까지 타이머로 잰 공부시간' },
-    { k:'steady', n:'🔥 꾸준함왕', val:s => s.weekActive * 100 + s.streak, fmt:(v, s) => `이번 주 ${s.weekActive}일`, desc:'이번 주에 인증한 날 수 (같으면 연속 기록 순)' },
-    { k:'growth', n:'📈 성장왕', val:s => s.week - s.lastWeek, fmt:v => (v > 0 ? '+' : v < 0 ? '-' : '') + fmtMin(Math.abs(v)), desc:'지난주보다 공부시간이 얼마나 늘었나! 누구나 1등 할 수 있어요' },
-    { k:'round', n:'🔁 회독왕', val:s => s.weekRounds, fmt:v => v + '칸', desc:'이번 주에 채운 회독 칸 수' },
-    { k:'qmake', n:'✍️ 출제왕', val:s => s.weekQMade, fmt:v => v + '문제', desc:'이번 주에 만든 나만의 문제 수 (숨김 처리된 문제 제외)' },
-    { k:'quiz', n:'🧠 퀴즈왕', val:s => s.weekQCorrect, fmt:v => v + '개 정답', desc:'이번 주에 친구들이 만든 문제를 맞힌 개수' },
-    { k:'xp', n:'🌸 누적 XP', val:s => s.xp, fmt:v => v + ' XP', desc:'지금까지 모은 전체 XP' },
-  ];
-  const tab = tabs.find(t => t.k === S.rankTab) || tabs[0];
-  const sorted = all.map(s => ({ s, v:tab.val(s) })).sort((a, b) => b.v - a.v);
-  const shown = sorted.filter(x => x.v > 0 || x.s.p.sid === S.me.sid);
-  let rank = 0, prevV = null;
-  sorted.forEach((x, i) => { if (x.v !== prevV) rank = i + 1; x.rank = rank; prevV = x.v; });
-  const classMin = S.logs.filter(l => l.type === 'STUDY').reduce((a, l) => a + l.v, 0);
+/* ---------- 📊 내 공부량 ---------- */
+// 틀린 문제: 가장 최근에 풀었을 때 틀린(또는 서술형 부분 정답) 문제
+function wrongPool(allSubjects) {
+  const last = {};
+  S.logs.forEach(l => {
+    if (l.type !== 'QPLAY') return;
+    const p = playInfo(l);
+    (p.wrong || []).concat(p.half || []).forEach(id => { last[id] = 'x'; });
+    (p.ids || []).forEach(id => { last[id] = 'o'; });
+  });
+  return S.questions.filter(q => last[q.id] === 'x' && (allSubjects || S.gameSubj === '전체' || q.subj === S.gameSubj));
+}
+
+function viewStats() {
+  const st = myStats();
+  const today = todayStr();
+  const subs = S.profile.exam.subjects;
+  const bar = (pct, color) => `<div class="bar mt8"><i style="width:${Math.round(Math.min(1, pct) * 100)}%;${color ? 'background:' + color : ''}"></i></div>`;
+  // 공부시간
+  const days14 = Array.from({ length:14 }, (_, i) => addDays(today, i - 13)).map(d => ({ d, m:(st.days[d] || {}).study || 0 }));
+  const max14 = Math.max(60, ...days14.map(x => x.m));
+  const studyDays = Object.keys(st.days).filter(d => st.days[d].study > 0).length;
+  const wk = weekStart(today);
+  const bySubj = {};
+  S.logs.forEach(l => {
+    if (l.type !== 'STUDY' || !(l.v > 0)) return;
+    const x = bySubj[l.m] = bySubj[l.m] || { all:0, week:0 };
+    x.all += l.v; if (l.d >= wk) x.week += l.v;
+  });
+  const subjRows = Object.entries(bySubj).sort((a, b) => b[1].all - a[1].all);
+  const maxSubj = Math.max(1, ...subjRows.map(r => r[1].all));
+  // 회독
+  const roundRows = subs.map(s => {
+    let cells = 0, goalDone = 0, sum = 0;
+    s.units.forEach(u => s.books.forEach(b => { cells++; const n = S.profile.rounds[rkey(s, u, b)] || 0; sum += n; if (n >= s.goal) goalDone++; }));
+    return { s, cells, goalDone, avg:cells ? sum / cells : 0 };
+  });
+  // 단권화
+  const danRows = subs.map(s => {
+    const units = s.danUnits || [];
+    const steps = units.reduce((a, u) => a + DAN_STEPS.filter((_, i) => danSteps(s, u)[i]).length, 0);
+    return { s, units:units.length, done:units.filter(u => danDone(s, u)).length, pct:units.length ? steps / (units.length * DAN_STEPS.length) : 0 };
+  });
+  // 문제
+  let right = 0, tried = 0;
+  S.logs.forEach(l => { if (l.type === 'QPLAY') { const p = playInfo(l); right += (p.ids || []).length; tried += p.n || 0; } });
+  const wrongNow = wrongPool(true).length;
+  const examStart = S.profile.exam.start;
   return `
-    <div class="card navy" style="padding:14px">
-      <div class="row between"><span class="jua" style="font-size:17px">🤝 우리 반 함께 ${fmtMin(classMin)}</span><span class="small" style="opacity:.8">목표 ${S.settings.classGoalHours}시간</span></div>
-      <div class="bar yellow mt8"><i style="width:${Math.min(100, classMin / (S.settings.classGoalHours * 60) * 100)}%"></i></div>
+    <div class="row between" style="margin-bottom:10px"><h2 style="margin:0">📊 내 공부량</h2>${examStart ? `<span class="chip dday">시험 ${ddayText(examStart)}</span>` : ''}</div>
+
+    <div class="card navy">
+      <div class="stats3" style="margin-top:0">
+        <div><b>${fmtMin(st.today.study)}</b><span>오늘</span></div>
+        <div><b>${fmtMin(st.week)}</b><span>이번 주</span></div>
+        <div><b>${fmtMin(st.studyTotal)}</b><span>누적</span></div>
+      </div>
+      <div class="stats3">
+        <div><b>🔥 ${st.streak}일</b><span>연속 공부</span></div>
+        <div><b>${st.bestStreak}일</b><span>최고 연속</span></div>
+        <div><b>${studyDays}일</b><span>공부한 날</span></div>
+      </div>
+      <div class="small" style="opacity:.85;margin-top:10px">${st.lastWeek ? `지난주보다 ${st.week >= st.lastWeek ? '<b style="color:var(--yellow)">+' + fmtMin(st.week - st.lastWeek) + '</b> 더 했어요 📈' : fmtMin(st.lastWeek - st.week) + ' 덜 했어요. 이번 주 남은 날 힘내자! 💪'}` : '이번 주도 한 걸음씩! 🌱'}</div>
     </div>
-    <div class="seg">${tabs.map(t => `<button class="${t.k === tab.k ? 'on' : ''}" data-act="rankTab" data-v="${t.k}">${t.n}</button>`).join('')}</div>
-    <p class="small muted" style="margin:8px 2px 10px">${tab.desc}</p>
-    ${shown.length ? shown.map(x => {
-      const lv = levelOf(x.s.xp);
-      const medal = x.v > 0 ? (['🥇', '🥈', '🥉'][x.rank - 1] || x.rank) : '–';
-      return `<div class="rk ${x.s.p.sid === S.me.sid ? 'me' : ''} ${x.rank === 1 && x.v > 0 ? 'top1' : ''}">
-        <span class="no">${medal}</span><span style="font-size:22px">${lv.e}</span>
-        <span class="grow">${esc(x.s.p.name)}${x.s.p.sid === S.me.sid ? ' <span class="tag">나</span>' : ''}<br><span class="small muted">Lv.${lv.lv} ${esc(lv.n)}</span></span>
-        <span class="val">${x.v > 0 || tab.k === 'growth' ? tab.fmt(x.v, x.s) : '도전!'}</span></div>`;
-    }).join('') : `<div class="empty"><div class="big">🏁</div>아직 기록이 없어요. 첫 번째 주인공이 되어 봐!</div>`}`;
+
+    <div class="card">
+      <h3 style="margin-top:0">⏱ 최근 2주 공부시간</h3>
+      <div class="week">${days14.map(x => { const dd = parseYmd(x.d);
+        return `<div class="col ${x.d === today ? 'today' : ''}"><b>${x.m ? Math.round(x.m / 6) / 10 + 'h' : ''}</b><i style="height:${Math.max(3, x.m / max14 * 80)}px"></i>${dd.getDate()}</div>`; }).join('')}</div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">📚 과목별 공부시간</h3>
+      ${subjRows.length ? subjRows.map(([n, x]) => `<div style="margin:10px 0">
+        <div class="row between small"><span class="ttchip" style="background:${subjColor(n)}">${esc(n)}</span><span class="muted">이번 주 ${fmtMin(x.week)} · 전체 <b style="color:var(--ink)">${fmtMin(x.all)}</b></span></div>
+        ${bar(x.all / maxSubj, 'linear-gradient(90deg,var(--blue),#6FA7F0)')}</div>`).join('')
+      : '<p class="small muted" style="margin:0">타이머로 공부시간을 저장하면 과목별로 모여요.</p>'}
+    </div>
+
+    <div class="card">
+      <div class="row between"><h3 style="margin:0">🔁 회독 진행</h3><button class="linkbtn" data-act="statsGo" data-v="rounds">회독판 →</button></div>
+      ${roundRows.some(r => r.cells) ? roundRows.filter(r => r.cells).map(r => `<div style="margin:10px 0">
+        <div class="row between small"><b>${esc(r.s.name)}</b><span class="muted">목표 ${r.s.goal}회독 채운 칸 <b style="color:var(--ink)">${r.goalDone}/${r.cells}</b> · 평균 ${r.avg.toFixed(1)}회독</span></div>
+        ${bar(r.goalDone / r.cells, 'linear-gradient(90deg,#F6B91A,var(--yellow))')}</div>`).join('')
+      : '<p class="small muted" style="margin:8px 0 0">회독판에 단원과 교재를 넣으면 여기서 진행률을 볼 수 있어요.</p>'}
+    </div>
+
+    <div class="card">
+      <div class="row between"><h3 style="margin:0">📒 단권화 진행</h3><button class="linkbtn" data-act="statsGo" data-v="dan">단권화 →</button></div>
+      ${danRows.some(r => r.units) ? danRows.filter(r => r.units).map(r => `<div style="margin:10px 0">
+        <div class="row between small"><b>${esc(r.s.name)}</b><span class="muted">완성 소단원 <b style="color:var(--ink)">${r.done}/${r.units}</b> · ${Math.round(r.pct * 100)}%</span></div>
+        ${bar(r.pct, 'linear-gradient(90deg,var(--green),#6CCB9A)')}</div>`).join('')
+      : '<p class="small muted" style="margin:8px 0 0">단권화 체크판에 소단원을 넣으면 여기서 진행률을 볼 수 있어요.</p>'}
+    </div>
+
+    <div class="card">
+      <div class="row between"><h3 style="margin:0">✍️ 나만의 문제</h3><button class="linkbtn" data-act="go" data-v="games">문제 풀기 →</button></div>
+      <div class="stats3" style="color:var(--ink)">
+        <div style="background:var(--pink-soft)"><b style="color:var(--pink)">${S.questions.length}</b><span>만든 문제</span></div>
+        <div style="background:var(--blue-soft)"><b style="color:var(--blue)">${tried ? Math.round(right / tried * 100) + '%' : '-'}</b><span>정답률</span></div>
+        <div style="background:var(--yellow-soft)"><b style="color:#A07400">${wrongNow}</b><span>다시 풀 문제</span></div>
+      </div>
+      ${wrongNow ? `<button class="btn block mt12" data-act="startGame" data-v="wrong">❌ 틀린 문제 ${wrongNow}개 다시 풀기</button>` : ''}
+    </div>
+
+    ${(S.history || []).length ? `<div class="card">
+      <h3 style="margin-top:0">📁 지난 시험</h3>
+      <div class="list">${S.history.slice().reverse().map(h => `<div class="it"><span class="grow"><b>${esc(h.label)}</b><br><span class="small muted">${esc(h.date)} 마무리 · 과목 ${(h.exam && h.exam.subjects || []).length}개</span></span></div>`).join('')}</div>
+    </div>` : ''}`;
 }
 
 /* ---------- 꿀팁 ---------- */
@@ -1707,7 +1641,7 @@ const photoPool = () => typePool(q => q.img);
 const essayPool = () => typePool(q => q.type === 'ESSAY');
 const myPool = () => S.questions.filter(q => q.sid === S.me.sid && (q.st === '공개' || !q.st) && (S.mineSubj === '전체' || q.subj === S.mineSubj));
 const seniorPool = () => S.questions.filter(q => q.st === '보관' && (S.gameSubj === '전체' || q.subj === S.gameSubj));
-const QUIZ_GAMES = ['quiz', 'photo', 'essay', 'mine', 'senior'];
+const QUIZ_GAMES = ['quiz', 'photo', 'essay', 'mine', 'senior', 'wrong'];
 // 서술형 채점: 핵심어가 답에 들어 있는지 (띄어쓰기·문장부호 무시)
 const essayHits = (it, v) => it.kws.filter(k => norm(v).includes(norm(k)));
 function viewGames() {
@@ -1717,7 +1651,7 @@ function viewGames() {
   if (!subjects.includes(S.gameSubj)) S.gameSubj = '전체';
   const pool = gamePool();
   const nPair = pool.filter(q => q.type === 'PAIR').length, nEng = pool.filter(q => q.type === 'ENG').length;
-  const nPhoto = photoPool().length, nEssay = essayPool().length;
+  const nPhoto = photoPool().length, nEssay = essayPool().length, nWrong = wrongPool().length;
   const solved = {};
   S.logs.forEach(l => { if (l.type === 'QPLAY' && l.sid !== S.me.sid) playInfo(l).ids.forEach(id => { solved[id] = (solved[id] || 0) + 1; }); });
   // 내가 만든 문제: 과목별로 골라 보고, 골라서 풀 수 있어요
@@ -1730,14 +1664,15 @@ function viewGames() {
   const nMine = myPool().length;
   const gameXp = Math.min(st.today.game, LIMIT.GAME);
   const games = [
-    { k:'quiz', e:'🎯', n:'퀴즈 도전', d:'모든 종류의 친구 문제를 무작위로 섞어서 10문제!', ok:pool.length >= 3, need:'문제가 3개 이상 필요해요' },
-    { k:'photo', e:'📸', n:'사진 문제 도전', d:'친구가 찍어 올린 문제! 사진을 확대해 보고 답을 써 봐', ok:nPhoto >= 1, need:'사진 문제가 아직 없어요. 첫 번째로 만들어 봐!' },
+    { k:'quiz', e:'🎯', n:'퀴즈 도전', d:'내가 만든 모든 종류의 문제를 무작위로 섞어서 10문제!', ok:pool.length >= 3, need:'문제가 3개 이상 필요해요' },
+    { k:'wrong', e:'❌', n:'틀린 문제 다시 풀기', d:`최근에 틀린 문제 ${nWrong}개! 맞힐 때까지 계속 나와요`, ok:nWrong >= 1, need:'지금은 다시 풀 틀린 문제가 없어요 👍' },
+    { k:'photo', e:'📸', n:'사진 문제 도전', d:'찍어 둔 문제! 사진을 확대해 보고 답을 써 봐', ok:nPhoto >= 1, need:'사진 문제가 아직 없어요. 첫 번째로 만들어 봐!' },
     { k:'essay', e:'📝', n:'서술형 도전', d:'문장으로 답을 쓰면 핵심어로 채점해요. 서술형 시험 대비!', ok:nEssay >= 1, need:'서술형 문제가 아직 없어요. 첫 번째로 만들어 봐!' },
     { k:'match', e:'🃏', n:'개념어 짝맞추기', d:'카드를 뒤집어 개념어와 뜻을 짝지어요', ok:nPair >= 3, need:`개념어 카드가 3개 이상 필요해요 (지금 ${nPair}개)` },
     { k:'order', e:'🔀', n:'영어 본문 문장 배열', d:'뒤섞인 단어를 순서대로! 본문 외우기 딱이야', ok:nEng >= 1, need:'영어 본문 문장이 필요해요' },
   ];
   return `
-    <div class="hero">${MASCOT}<div class="bubble">친구들이 만든 문제로 게임하자!<br>문제를 만들면 <b>+${XP.QMAKE} XP</b>, 친구가 내 문제를 맞힐 때마다 <b>+${XP.QCREDIT} XP</b>!</div></div>
+    <div class="hero">${MASCOT}<div class="bubble">내가 만든 문제로 계속 풀어 보자!<br>문제를 만들면 <b>+${XP.QMAKE} XP</b>, 맞히면 또 XP! 틀린 문제는 <b>다시 풀기</b>로 끝까지!</div></div>
     <div class="card">
       <div class="row between"><span>📦 문제 은행 <b>${all.length}</b>문제</span><span class="small muted">오늘 게임 XP ${gameXp}/${LIMIT.GAME}</span></div>
       <div class="bar mt8"><i style="width:${gameXp / LIMIT.GAME * 100}%"></i></div>
@@ -1750,18 +1685,18 @@ function viewGames() {
     ${nSenior ? `<button class="gamec" data-act="startGame" data-v="senior">
       <span class="e" style="background:var(--yellow-soft)">📚</span><span class="grow"><span class="jua" style="font-size:17px">선배 문제 은행</span><br>
       <span class="small muted">지난 스터디 선배들이 만든 ${nSenior}문제 · 연습용 (XP 없음) · ⚠️ 올해 시험 범위와 다를 수 있어요</span></span><span class="xp">▶</span></button>` : ''}
-    <p class="small muted" style="margin:2px 4px 0">친구 문제 정답 1개 +${XP.QCORRECT} XP · 서술형 부분 정답 +${XP.QHALF} · 5문제 이상 다 맞히면 +${XP.QPERFECT} 보너스 · 내가 만든 문제는 XP 없음</p>
+    <p class="small muted" style="margin:2px 4px 0">정답 1개 +${XP.QCORRECT} XP · 서술형 부분 정답 +${XP.QHALF} · 5문제 이상 다 맞히면 +${XP.QPERFECT} 보너스 (게임 XP는 하루 ${LIMIT.GAME}까지)</p>
 
     <div class="sec-title"><h2>내가 만든 문제</h2><span class="small muted">${mineAll.length}개</span></div>
     ${mineAll.length ? `
       <div class="seg" style="margin-bottom:10px">${mineSubjects.map(s => `<button class="${s === S.mineSubj ? 'on' : ''}" data-act="mineSubj" data-v="${esc(s)}">${esc(s)} ${s === '전체' ? mineAll.length : mineAll.filter(q => q.subj === s).length}</button>`).join('')}</div>
       <button class="gamec" data-act="startGame" data-v="mine" ${nMine ? '' : 'disabled'}>
         <span class="e" style="background:var(--blue-soft)">🔁</span><span class="grow"><span class="jua" style="font-size:17px">${S.mineSubj === '전체' ? '' : esc(S.mineSubj) + ' '}내 문제 복습하기</span><br>
-        <span class="small muted">내가 만든 ${nMine}문제 중 ${Math.min(10, nMine)}개를 섞어서! 시험 전 매일 한 번씩 (XP 없음)</span></span><span class="xp">▶</span></button>
+        <span class="small muted">고른 과목 문제 ${nMine}개 중 ${Math.min(10, nMine)}개를 섞어서! 시험 전 매일 한 번씩</span></span><span class="xp">▶</span></button>
       <div class="card list" style="padding:6px 14px">${mineShown.map(q => {
       const T = QTYPES.find(x => x.t === q.type) || QTYPES[0];
       return `<div class="it"><span style="font-size:20px">${T.e}</span>
-        <div class="grow"><div class="small muted">${esc(q.subj)} · 친구들이 ${solved[q.id] || 0}번 맞힘 ${q.st === '숨김' ? '<span class="tag no">숨김</span>' : ''}</div>
+        <div class="grow"><div class="small muted">${esc(q.subj)} · ${(QTYPES.find(x => x.t === q.type) || {}).n || ''} · ${esc(q.d)}</div>
         <div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(q.q)}</div></div>
         <button class="btn ghost sm" data-act="qDel" data-v="${q.id}" aria-label="삭제">🗑</button></div>`; }).join('')}
         ${mine.length > mineShown.length ? `<button class="linkbtn" data-act="mineMore">${mine.length - mineShown.length}개 더 보기</button>` : ''}</div>`
@@ -1796,7 +1731,7 @@ function viewQmake() {
     ESSAY: photoField('사진 (선택) — 그래프·그림·지도를 보고 쓰는 문제라면') +
       ta('q', '서술형 질문', '예: 물이 끓는 동안 계속 가열해도 온도가 일정한 까닭을 서술하시오.') +
       ta('a', '모범 답안', '예: 가해 준 열이 물이 수증기로 변하는 기화에 쓰이기 때문에 온도가 일정하다.') +
-      `<div class="field"><span class="small muted">핵심어 = 채점 기준 (1~4개). 친구 답에 이 말이 들어 있으면 점수! <b>모범 답안 속 말 그대로</b> 적어 줘.</span>
+      `<div class="field"><span class="small muted">핵심어 = 채점 기준 (1~4개). 답에 이 말이 들어 있으면 점수! <b>모범 답안 속 말 그대로</b> 적어 줘.</span>
         <div class="grid2">${[0, 1, 2, 3].map(i => `<input class="input mt8" data-qf="opt${i}" placeholder="핵심어 ${i + 1}${i ? ' (선택)' : ''}${['  예: 기화', '  예: 열', '', ''][i]}" value="${esc(d.opts[i])}">`).join('')}</div></div>`,
     PHOTO: photoField('문제 사진') +
       ta('q', '질문 (선택)', '예: 그래프의 B 구간에서 일어나는 상태 변화는? (비워 두면 "사진 속 문제를 풀어 봐!")') +
@@ -1806,8 +1741,8 @@ function viewQmake() {
   return `
     <button class="linkbtn" data-act="go" data-v="games">← 게임</button>
     <h2>✍️ 나만의 문제 만들기</h2>
-    <div class="card pink small" style="padding:12px 14px">친구들이 풀 문제를 만들어요! <b>+${XP.QMAKE} XP</b> (하루 ${LIMIT.QMAKE}문제까지 · 오늘 ${Math.min(made, LIMIT.QMAKE)}/${LIMIT.QMAKE})<br>
-      친구가 내 문제를 맞힐 때마다 <b>+${XP.QCREDIT} XP</b>가 또 들어와요 🎁 <button class="linkbtn" data-act="tip" data-v="fin1">문제 잘 만드는 법</button></div>
+    <div class="card pink small" style="padding:12px 14px">나만의 문제를 만들어 두고 계속 풀어요! <b>+${XP.QMAKE} XP</b> (하루 ${LIMIT.QMAKE}문제까지 · 오늘 ${Math.min(made, LIMIT.QMAKE)}/${LIMIT.QMAKE})<br>
+      풀어서 맞히면 XP가 또 들어와요 🎁 <button class="linkbtn" data-act="tip" data-v="fin1">문제 잘 만드는 법</button></div>
     <div class="typebtns">${QTYPES.map(x => `<button class="${x.t === d.type ? 'on' : ''}" data-act="qType" data-v="${x.t}"><b>${x.e}</b>${x.n}</button>`).join('')}</div>
     <div class="card mt12">
       <p class="small muted" style="margin-top:0">${T.help}</p>
@@ -1815,7 +1750,7 @@ function viewQmake() {
       ${fields[d.type]}
       <button class="btn block" data-act="qSave">문제 올리기 ${made < LIMIT.QMAKE ? `(+${XP.QMAKE} XP)` : ''}</button>
     </div>
-    <p class="small muted center">장난 문제나 친구를 놀리는 문제는 선생님이 숨길 수 있고, 그러면 XP도 빠져요.</p>`;
+    <p class="small muted center">💡 헷갈렸던 것, 틀렸던 것 위주로 만들면 최고의 복습이 돼요.</p>`;
 }
 
 // 문제 → 퀴즈 한 칸으로 바꾸기
@@ -1895,7 +1830,7 @@ function viewPlay() {
     return top(`${g.i + 1} / ${g.n}`, `⭕ ${g.ids.length}${g.half.length ? ' · 🔺 ' + g.half.length : ''}`) + `
       <div class="bar"><i style="width:${(g.i + (answered ? 1 : 0)) / g.n * 100}%"></i></div>
       <div class="card mt12">
-        <div class="row"><span class="tag">${it.label}</span><span class="tag">${esc(it.q.subj)}</span>${it.q.st === '보관' ? '<span class="tag" style="background:var(--yellow-soft);color:#A07400">📚 선배</span>' : ''}<span class="grow"></span><span class="small muted">출제: ${esc(it.q.name)}</span></div>
+        <div class="row"><span class="tag">${it.label}</span><span class="tag">${esc(it.q.subj)}</span>${it.q.st === '보관' ? '<span class="tag" style="background:var(--yellow-soft);color:#A07400">📚 선배</span>' : ''}<span class="grow"></span><span class="small muted">${esc(it.q.d)} 만듦</span></div>
         ${it.photo ? photoBox(it.q.id) : ''}
         <div class="qprompt">${esc(it.prompt)}</div>
         ${it.hint ? `<div class="small muted mt8">뜻: ${esc(it.hint)}</div>` : ''}
@@ -1908,7 +1843,7 @@ function viewPlay() {
           : `<div class="row mt12"><input class="input grow" id="typeAns" autocomplete="off" autocapitalize="off" placeholder="정답 입력"><button class="btn" data-act="qTyped">확인</button></div>`}
         ${answered && !essay ? `<div class="result ${ok ? 'ok' : 'no'}">${ok ? '🎉 <b>정답!</b>' : `😢 아쉬워! 정답: <b>${esc(it.answer)}</b>`}${it.q.exp ? `<div class="small mt8">💡 ${esc(it.q.exp)}</div>` : ''}</div>` : ''}
         ${answered ? `
-          <div class="row mt12"><button class="btn ghost sm" data-act="qReport" data-v="${it.q.id}" ${g.reported[it.q.id] ? 'disabled' : ''}>${g.reported[it.q.id] ? '신고함' : '🚩 문제 이상해요'}</button><span class="grow"></span>
+          <div class="row mt12"><button class="btn ghost sm" data-act="qDelInGame" data-v="${it.q.id}">🗑 이 문제 지우기</button><span class="grow"></span>
           <button class="btn" data-act="qNext">${g.i + 1 < g.n ? '다음 →' : '결과 보기'}</button></div>` : ''}
       </div>`;
   }
@@ -1929,7 +1864,7 @@ function viewPlay() {
       ${g.checked == null
         ? `<div class="row mt16"><button class="btn ghost grow" data-act="oReset">↺ 다시</button><button class="btn grow" data-act="oCheck">확인</button></div>`
         : `<div class="result ${g.checked ? 'ok' : 'no'}">${g.checked ? '🎉 <b>완벽해!</b>' : '😢 아쉬워! 정답 문장:'}<div class="mt8" style="font-size:16px">${esc(it.q.q)}</div></div>
-           <div class="row mt12"><button class="btn ghost sm" data-act="qReport" data-v="${it.q.id}" ${g.reported[it.q.id] ? 'disabled' : ''}>${g.reported[it.q.id] ? '신고함' : '🚩'}</button><span class="grow"></span><button class="btn" data-act="oNext">${g.i + 1 < g.n ? '다음 →' : '결과 보기'}</button></div>`}
+           <div class="row mt12"><span class="grow"></span><button class="btn" data-act="oNext">${g.i + 1 < g.n ? '다음 →' : '결과 보기'}</button></div>`}
     </div>`;
 }
 
@@ -1944,9 +1879,9 @@ function viewGameResult(g) {
     <h2>${ratio >= .8 ? '대단해!' : ratio >= .5 ? '잘했어!' : '다음엔 더 잘할 수 있어!'}</h2>
     <p>${detail}</p>
     <div class="jua" style="font-size:24px;color:var(--pink)">${g.saving ? '저장 중…' : g.xpGained > 0 ? '+' + g.xpGained + ' XP' : ''}</div>
-    ${g.game === 'mine' ? `<p class="small muted">내 문제 복습은 XP가 없어요. 틀린 문제는 교과서에 단권화해 두자! 📚</p>`
+    ${g.game === 'wrong' ? `<p class="small muted">여전히 틀린 문제는 다음에 또 나와요. 틀린 개념은 교과서에 단권화! 📚</p>`
       : g.game === 'senior' ? `<p class="small muted">선배 문제는 연습용이라 XP가 없어요. 올해 범위에 없는 내용은 넘어가도 돼요!</p>`
-      : !g.saving && !(g.xpGained > 0) ? `<p class="small muted">오늘 게임 XP(${LIMIT.GAME})를 다 받았거나, 내가 만든 문제라서 XP가 없어요.</p>` : ''}
+      : !g.saving && !(g.xpGained > 0) ? `<p class="small muted">오늘 받을 수 있는 게임 XP(${LIMIT.GAME})를 다 받았어요. 그래도 풀수록 실력은 쑥쑥!</p>` : ''}
     <div class="row mt16"><button class="btn ghost grow" data-act="go" data-v="games">게임 목록</button><button class="btn grow" data-act="gameAgain">한 번 더!</button></div>
   </div>`;
 }
@@ -1957,7 +1892,7 @@ async function finishGame() {
   g.done = true; g.saving = true; render();
   try {
     const before = myStats();
-    const log = await api('savePlay', S.token, g.game, Math.min(40, g.n), g.ids, g.half || []);
+    const log = await api('savePlay', S.token, g.game, Math.min(40, g.n), g.ids, g.half || [], g.wrong || []);
     S.logs.push(log);
     g.xpGained = myStats().xp - before.xp;
     g.saving = false;
@@ -2062,7 +1997,7 @@ function viewSetupExam() {
   if (teacherSchedule().length) return `
     <button class="linkbtn" data-act="go" data-v="setup">← 첫 시간 미션</button>
     <h2>🎯 시험 범위 · 목표 점수</h2>
-    <div class="card blue small" style="padding:12px 14px">📅 시험 과목과 날짜를 <b>선생님이 미리 넣어 줬어요!</b><br>과목마다 <b>목표 점수</b>를 정해 보자. 날짜나 범위가 바뀌었으면 내가 고쳐도 돼요.</div>
+    <div class="card blue small" style="padding:12px 14px">📅 시험 과목과 날짜는 <b>선생님이 정해 줬어요!</b><br>과목마다 <b>목표 점수</b>를 정해 보자. 범위는 내가 더 자세히 적어도 좋아.</div>
     ${ex.subjects.map((s, i) => `<div class="card">
       <div class="row between"><h3 style="margin:0">${esc(s.name)}</h3>
         <span class="tag" style="background:var(--pink-soft);color:var(--pink)">${s.date ? fmtExamDay(s) + ' · ' + ddayText(s.date) : '날짜 미정'}</span></div>
@@ -2074,11 +2009,6 @@ function viewSetupExam() {
         <label class="field" style="margin:0"><span>목표 점수</span><input class="input sm" type="number" min="0" max="100" inputmode="numeric" data-sub="${i}" data-f="target" value="${esc(s.target || '')}"></label>
         <label class="field" style="margin:0"><span>내 범위 메모</span><input class="input sm" data-sub="${i}" data-f="range" value="${esc(s.range || '')}" placeholder="예: 교과서 12~58p"></label>
       </div>
-      <div class="mt8" style="display:grid;grid-template-columns:2fr 1fr;gap:8px">
-        <label class="field" style="margin:0"><span>시험일</span><input class="input sm" type="date" data-sub="${i}" data-f="date" value="${esc(s.date || '')}"></label>
-        <label class="field" style="margin:0"><span>교시</span><select class="input sm" data-sub="${i}" data-f="period">${['', '1', '2', '3', '4', '5', '6', '7'].map(p => `<option value="${p}" ${String(s.period || '') === p ? 'selected' : ''}>${p ? p + '교시' : '-'}</option>`).join('')}</select></label>
-      </div>
-      <div class="small muted mt8">${s.myDate ? `✏️ 내가 날짜를 고쳤어요 <button class="linkbtn" data-act="examDateReset" data-v="${i}">↺ 선생님 일정으로 되돌리기</button>` : '👩‍🏫 선생님이 넣어 준 날짜예요'}</div>
     </div>`).join('')}
     ${ttEditor()}
     <button class="btn block" data-act="saveExam">저장하기 ${myStats().setups.has('exam') ? '' : '(+' + XP.SETUP + ' XP)'}</button>`;
@@ -2156,15 +2086,6 @@ function viewAdmin() {
   if (!A.exam) A.exam = { start:D.settings.examStart || '', subjects:sch.length ? JSON.parse(JSON.stringify(sch)) : D.settings.subjects.map(n => ({ name:n, date:'', period:'', range:'' })) };
   const qs = (D.questions || []).slice().sort((a, b) => (b.rep - a.rep) || (a.d < b.d ? 1 : a.d > b.d ? -1 : 0));
   const shownQ = A.qAll ? qs : qs.slice(0, 20);
-  // 반별 시간표: 저장된 반 + 가입한 학생 학번에서 찾은 반 + 선생님이 추가한 반
-  const savedCls = D.settings.classes || {};
-  const classKeys = uniq(Object.keys(savedCls).concat(D.students.map(s => classOf(s.sid)).filter(Boolean), A.extraCls || []))
-    .sort((a, b) => a.localeCompare(b, undefined, { numeric:true }));
-  if (!A.cls && classKeys.length) A.cls = classKeys[0];
-  if (A.cls && !A.ctt) A.ctt = JSON.parse(JSON.stringify((savedCls[A.cls] || {}).timetable || emptyTT()));
-  const ttPal = uniq((D.settings.examSchedule || []).map(s => s.name).concat(D.settings.subjects, ALL_SUBJECTS.filter(n => n !== '기타'), TT_EXTRA));
-  if (A.brush == null) A.brush = ttPal[0];
-  const nStu = key => D.students.filter(s => classOf(s.sid) === key).length;
   return `<div class="wrap"><main>
     <div class="row between"><button class="linkbtn" data-act="adminExit">← 나가기</button><button class="btn ghost sm" data-act="adminRefresh">↻ 새로고침</button></div>
     <h2>👩‍🏫 선생님 페이지</h2>
@@ -2176,7 +2097,7 @@ function viewAdmin() {
       이제 아래 <b>📅 시험 일정</b>을 새로 입력해 주세요.</p></div>` : ''}
 
     <div class="card ${sch.length ? '' : 'pink'}">
-      <div class="row between"><h3 style="margin:0">📅 시험 일정 (전체 공통)</h3>${sch.length ? '<span class="tag ok">학생 앱에 적용 중</span>' : '<span class="tag wait">아직 안 정함</span>'}</div>
+      <div class="row between"><h3 style="margin:0">📅 시험 일정 (반 전체)</h3>${sch.length ? '<span class="tag ok">학생 앱에 적용 중</span>' : '<span class="tag wait">아직 안 정함</span>'}</div>
       <p class="small muted">여기서 정한 과목 · 시험일 · 교시 · 범위가 학생 앱에 자동으로 들어가요. 학생은 <b>목표 점수</b>만 정하면 돼요.</p>
       <label class="field"><span>시험 첫날 (비우면 가장 빠른 시험일로)</span><input class="input sm" type="date" data-ax="start" value="${esc(A.exam.start)}"></label>
       ${A.exam.subjects.map((s, i) => `<div class="subjform">
@@ -2191,21 +2112,6 @@ function viewAdmin() {
         <button class="linkbtn" data-act="axTAdd" data-v="${i}">＋ 선생님별 범위 (반마다 선생님·범위가 다를 때)</button>
       </div>`).join('')}
       <div class="row mt12"><button class="btn ghost sm" data-act="axAdd">＋ 과목 추가</button><span class="grow"></span><button class="btn navy sm" data-act="axSave">저장하고 학생들에게 적용</button></div>
-    </div>
-
-    <div class="card">
-      <div class="row between"><h3 style="margin:0">🗓 반별 시간표</h3><span class="small muted">학생 앱에 미리 채워져요</span></div>
-      <p class="small muted">반은 <b>학번 앞 세 자리</b>로 자동으로 나눠요 (예: 20315 → 2학년 3반). 학생도 자기 시간표를 고칠 수 있어요.</p>
-      <div class="seg" style="margin-bottom:10px">${classKeys.map(k => `<button class="${k === A.cls ? 'on' : ''}" data-act="axCls" data-v="${k}">${classLabel(k)}${nStu(k) ? ` <span style="opacity:.7">${nStu(k)}명</span>` : ''}${savedCls[k] ? ' ✓' : ''}</button>`).join('')}
-        <button data-act="axClsAdd">＋ 반 추가</button></div>
-      ${A.cls ? `
-        <div class="palette">${ttPal.map(n => `<button class="${A.brush === n ? 'on' : ''}" data-act="axBrush" data-v="${esc(n)}"><i style="background:${subjColor(n)}"></i>${esc(n)}</button>`).join('')}
-          <button class="${A.brush === '' ? 'on' : ''}" data-act="axBrush" data-v=""><i style="background:#fff"></i>지우개</button></div>
-        <table class="tt mt12"><thead><tr><th></th>${TT_DAYS.map(d => `<th>${d}</th>`).join('')}</tr></thead>
-          <tbody>${Array.from({ length:TT_PERIODS }, (_, p) => `<tr><th>${p + 1}</th>${TT_DAYS.map((_, d) => { const v = A.ctt[d][p];
-            return `<td><button class="ttc" style="background:${v ? subjColor(v) : '#fff'}" data-act="axCell" data-v="${d}|${p}" aria-label="${TT_DAYS[d]} ${p + 1}교시">${esc(v)}</button></td>`; }).join('')}</tr>`).join('')}</tbody></table>
-        <div class="row mt12"><button class="btn ghost sm" data-act="axTtClear">모두 지우기</button><span class="grow"></span><button class="btn navy sm" data-act="axTtSave">${classLabel(A.cls)} 시간표 저장</button></div>`
-      : '<p class="small muted">아직 가입한 학생이 없어요. [＋ 반 추가]로 반을 먼저 만들 수 있어요.</p>'}
     </div>
 
     <div class="card"><label class="field" style="margin:0"><span>날짜</span><input class="input" type="date" id="adminDate" value="${date}"></label></div>
@@ -2268,6 +2174,7 @@ async function loadState() {
   S.me = st.me; S.settings = st.settings; S.students = st.students; S.logs = st.logs; S.questions = st.questions || [];
   S.settings.examSchedule = S.settings.examSchedule || [];
   S.profile = defaultProfile(st.profile);
+  S.history = st.history || [];
 }
 
 async function doSaveTimer(btn, min) {
@@ -2288,13 +2195,14 @@ function startGame(kind) {
   const quizGame = (game, qs, min, msg) => {
     const items = shuffle(qs).map(q => quizItem(q, activeQs())).filter(Boolean).slice(0, 10);
     if (items.length < min) { toast(msg, 'err'); return false; }
-    S.game = { game, items, i:0, n:items.length, ids:[], half:[], picked:null, reported:{} };
+    S.game = { game, items, i:0, n:items.length, ids:[], half:[], wrong:[], picked:null, reported:{} };
     return true;
   };
   if (kind === 'quiz') { if (!quizGame('quiz', pool, 3, '문제가 조금 더 필요해요!')) return; }
   else if (kind === 'photo') { if (!quizGame('photo', photoPool(), 1, '사진 문제가 아직 없어요!')) return; }
   else if (kind === 'essay') { if (!quizGame('essay', essayPool(), 1, '서술형 문제가 아직 없어요!')) return; }
   else if (kind === 'mine') { if (!quizGame('mine', myPool(), 1, '복습할 내 문제가 없어요!')) return; }
+  else if (kind === 'wrong') { if (!quizGame('wrong', wrongPool(), 1, '다시 풀 틀린 문제가 없어요!')) return; }
   else if (kind === 'senior') { if (!quizGame('senior', seniorPool(), 1, '선배 문제가 없어요!')) return; }
   else if (kind === 'match') {
     const pairs = shuffle(pool.filter(q => q.type === 'PAIR')).slice(0, 6);
@@ -2305,7 +2213,7 @@ function startGame(kind) {
     const es = shuffle(pool.filter(q => q.type === 'ENG')).slice(0, 5);
     if (!es.length) return toast('영어 본문 문장이 필요해요!', 'err');
     const scramble = s => { const w = s.trim().split(/\s+/); let r = w; for (let k = 0; k < 10 && w.length > 1 && r.join(' ') === w.join(' '); k++) r = shuffle(w); return r; };
-    S.game = { game:'order', items:es.map(q => ({ q, toks:scramble(q.q) })), i:0, n:es.length, chosen:[], checked:null, ids:[], reported:{} };
+    S.game = { game:'order', items:es.map(q => ({ q, toks:scramble(q.q) })), i:0, n:es.length, chosen:[], checked:null, ids:[], wrong:[], reported:{} };
   }
   go('play');
 }
@@ -2353,17 +2261,85 @@ const ACT = {
       <button class="it" style="width:100%" data-act="menuGo" data-v="tips">💡 나미쌤 꿀팁</button>
       <button class="it" style="width:100%" data-act="menuGo" data-v="games">🎮 미니게임</button>
       <button class="it" style="width:100%" data-act="menuGo" data-v="qmake">✍️ 나만의 문제 만들기</button>
-      <button class="it" style="width:100%" data-act="refresh">↻ 새로고침</button>
-      <button class="it" style="width:100%" data-act="logout">🚪 로그아웃 <span class="small muted">(${esc(S.me.name)} · ${S.me.sid})</span></button>
+      <button class="it" style="width:100%" data-act="newExamOpen">🗓 새 시험 준비 시작하기</button>
+      <button class="it" style="width:100%" data-act="rename">🙂 이름 바꾸기 <span class="small muted">(${esc(S.me.name)})</span></button>
     </div>
+    <h3 class="mt16">💾 백업 <span class="small muted">(기록은 이 폰에만 있어요)</span></h3>
+    <div class="list">
+      <button class="it" style="width:100%" data-act="exportData">⬇️ 백업 파일 내려받기 <span class="small muted">· 폰 바꿀 때 · 가끔씩</span></button>
+      <button class="it" style="width:100%" data-act="importPick">⬆️ 백업 파일 불러오기</button>
+      <button class="it" style="width:100%;color:var(--red)" data-act="resetAll">🧹 모든 기록 지우기</button>
+    </div>
+    <input type="file" accept=".json,application/json" id="importFile" class="hidden">
     <h3 class="mt16">XP 받는 법</h3>
-    <div class="small">📒 플래너 인증 +${XP.PLANNER} · 📝 배움노트 +${XP.NOTE}<br>⏱ 공부 1분 = 1 XP (하루 최대 ${S.settings.dailyStudyXpCap})<br>🔁 회독 1칸 +${XP.ROUND} · 📒 단권화 1단계 +${XP.DAN} · 💡 꿀팁 읽기 +${XP.TIP}<br>💯 퍼펙트 데이 +${XP.PERFECT} · 🏁 첫 시간 미션 각 +${XP.SETUP}<br>
+    <div class="small">📒 플래너 +${XP.PLANNER} · 📝 배움노트 +${XP.NOTE}<br>⏱ 공부 1분 = 1 XP (하루 최대 ${S.settings.dailyStudyXpCap})<br>🔁 회독 1칸 +${XP.ROUND} · 📒 단권화 1단계 +${XP.DAN} · 💡 꿀팁 읽기 +${XP.TIP}<br>💯 퍼펙트 데이 +${XP.PERFECT} · 🏁 첫 시간 미션 각 +${XP.SETUP}<br>
       🔒 집중 모드 25분↑ +${XP.FOCUS} (하루 ${LIMIT.FOCUS}번)<br>
-      ✍️ 문제 만들기 +${XP.QMAKE} (하루 ${LIMIT.QMAKE}문제) · 친구가 내 문제 맞힘 +${XP.QCREDIT}<br>
-      🎮 친구 문제 정답 +${XP.QCORRECT} · 다 맞히면 +${XP.QPERFECT} (게임은 하루 최대 ${LIMIT.GAME})</div>`),
+      ✍️ 문제 만들기 +${XP.QMAKE} (하루 ${LIMIT.QMAKE}문제)<br>
+      🎮 문제 정답 +${XP.QCORRECT} · 다 맞히면 +${XP.QPERFECT} (게임은 하루 최대 ${LIMIT.GAME})</div>`),
   menuGo: el => { closeModal(); go(el.dataset.v); },
-  refresh: async () => { closeModal(); await withBusy(null, async () => { await loadState(); render(); toast('최신 기록을 불러왔어요'); }); },
-  logout: () => { closeModal(); logout(); },
+  statsGo: el => { if (el.dataset.v === 'dan') S.roundsTab = 'dan'; else S.roundsTab = 'rounds'; go('rounds'); },
+
+  // 오늘 체크 (플래너·배움노트)
+  checkDaily: async el => {
+    const kind = el.dataset.v;
+    const before = myStats();
+    await withBusy(el, async () => {
+      const l = await api('checkDaily', S.token, kind);
+      if (l) S.logs.push(l);
+      else S.logs = S.logs.filter(x => !(x.type === kind && x.d === todayStr()));
+      render();
+      if (l) { celebrate(before, kind === 'PLANNER' ? '플래너 체크!' : '배움노트 체크!'); confetti(); }
+    });
+  },
+
+  // 이름 · 새 시험 · 백업
+  rename: async () => {
+    const n = prompt('새 이름(별명)을 적어 주세요', S.me.name);
+    if (!n || !n.trim()) return;
+    S.me.name = await api('rename', S.token, n.trim());
+    closeModal(); render(); toast('이름을 바꿨어요 🙂');
+  },
+  newExamOpen: () => openModal(`<h2>🗓 새 시험 준비 시작하기</h2>
+    <p class="small">지난 시험의 <b>과목·범위·목표·회독판·단권화</b>는 '지난 시험' 기록으로 남기고 새로 시작해요.<br>
+    <b>공부시간, XP, 나만의 문제, 시간표, 공부 가능시간은 그대로</b> 남아요.</p>
+    <label class="field"><span>지난 시험 이름</span><input class="input" id="neLabel" maxlength="30" placeholder="예: 고1 1학기 중간고사"></label>
+    <button class="btn block" data-act="newExamGo">지난 시험 정리하고 새로 시작</button>`),
+  newExamGo: async el => {
+    const label = $('#neLabel').value.trim();
+    if (!label) return toast('지난 시험 이름을 적어 주세요.', 'err');
+    await withBusy(el, async () => {
+      await api('newExam', S.token, label);
+      await loadState(); closeModal(); go('setup-exam');
+      toast('새 시험 준비 시작! 과목과 범위를 적어 보자 🌱');
+    });
+  },
+  exportData: async el => {
+    await withBusy(el, async () => {
+      const data = await api('exportAll', S.token);
+      const blob = new Blob([JSON.stringify(data)], { type:'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `티처스혼공_백업_${todayStr()}.json`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+      toast('백업 파일을 내려받았어요. 잘 보관해 두세요 💾');
+    });
+  },
+  importPick: () => { const f = $('#importFile'); if (f) { f.value = ''; f.click(); } },
+  resetAll: async () => {
+    if (!confirm('이 폰에 있는 티처스 혼공 기록을 모두 지울까요? (백업 파일이 없으면 되돌릴 수 없어요)')) return;
+    if (!confirm('정말 모두 지울까요?')) return;
+    await api('resetAll', S.token);
+    store.del(TOKEN_KEY); S.token = ''; S.me = null; closeModal(); S.view = 'home'; render();
+  },
+  qDelInGame: async el => {
+    if (!confirm('이 문제를 지울까요?')) return;
+    await withBusy(el, async () => {
+      await api('deleteQuestion', S.token, el.dataset.v);
+      S.questions = S.questions.filter(q => q.id !== el.dataset.v);
+      toast('지웠어요. 다음 문제로 넘어가요.');
+    });
+  },
 
   tip: async el => {
     const t = TIPS.find(x => x.id === el.dataset.v);
@@ -2457,7 +2433,7 @@ const ACT = {
     const g = S.game, it = g.items[g.i];
     if (g.picked != null) return;
     g.picked = el.dataset.v;
-    if (isRight(it, g.picked)) g.ids.push(it.q.id);
+    if (isRight(it, g.picked)) g.ids.push(it.q.id); else g.wrong.push(it.q.id);
     render();
   },
   qEssay: () => {
@@ -2468,6 +2444,7 @@ const ACT = {
     const hits = essayHits(it, v);
     if (hits.length === it.kws.length) g.ids.push(it.q.id);
     else if (hits.length) g.half.push(it.q.id);
+    else g.wrong.push(it.q.id);
     render();
   },
   mineSubj: el => { S.mineSubj = el.dataset.v; S.mineMore = false; render(); },
@@ -2511,7 +2488,7 @@ const ACT = {
     const g = S.game, it = g.items[g.i];
     if (g.chosen.length < it.toks.length) return toast('단어를 모두 골라 줘!', 'err');
     g.checked = g.chosen.map(k => it.toks[k]).join(' ') === it.q.q.trim().split(/\s+/).join(' ');
-    if (g.checked) g.ids.push(it.q.id);
+    if (g.checked) g.ids.push(it.q.id); else g.wrong.push(it.q.id);
     render();
   },
   oNext: () => {
@@ -2557,7 +2534,7 @@ const ACT = {
       Object.assign(d, { q:'', a:'', opts:['', '', '', ''], exp:'', image:'' });
       render(); window.scrollTo(0, 0);
       celebrate(before, '문제 등록!');
-      toast('친구들이 이제 이 문제를 풀 수 있어요 🎉');
+      toast('게임 탭에서 언제든 다시 풀 수 있어요 🎉');
     });
   },
   qDel: async el => {
@@ -2672,10 +2649,7 @@ const ACT = {
     ex.subjects.forEach(s => { const old = S.profile.exam.subjects.find(o => o.id === s.id); if (old) { s.units = old.units; s.books = old.books; s.goal = old.goal; s.danOn = old.danOn; s.danUnits = old.danUnits; } });
     const next = S.returnTo || 'setup';
     S.returnTo = null;
-    // 선생님 시간표와 같으면 '선생님 것 쓰기'로, 다르면 '내가 고친 것'으로 저장해요
-    const grid = S.ttDraft || ttGrid(), ct = classTimetable();
-    const mine = !ct || JSON.stringify(grid) !== JSON.stringify(ct);
-    saveProfileWith({ exam:ex, timetable:{ grid, mine } }, 'exam', el, next);
+    saveProfileWith({ exam:ex, timetable:{ grid:S.ttDraft || S.profile.timetable.grid } }, 'exam', el, next);
   },
 
   // 우리 반 시간표
@@ -2683,12 +2657,6 @@ const ACT = {
   ttCell: el => {
     const [d, p] = el.dataset.v.split('|').map(Number);
     S.ttDraft[d][p] = S.ttDraft[d][p] === S.ttBrush ? '' : S.ttBrush;
-    const y = window.scrollY; render(); window.scrollTo(0, y);
-  },
-  ttReset: () => { S.ttDraft = JSON.parse(JSON.stringify(classTimetable())); const y = window.scrollY; render(); window.scrollTo(0, y); toast('선생님 시간표로 되돌렸어요. 저장을 눌러 주세요!'); },
-  examDateReset: el => {
-    const s = S.examDraft.subjects[+el.dataset.v];
-    s.myDate = false; syncExam({ exam:S.examDraft });
     const y = window.scrollY; render(); window.scrollTo(0, y);
   },
   ttToggle: () => { store.set('tt_open', !store.get('tt_open', true)); render(); },
@@ -2761,31 +2729,6 @@ const ACT = {
     });
   },
   axDel: el => { S.admin.exam.subjects.splice(+el.dataset.v, 1); render(); },
-  // 반별 시간표
-  axCls: el => { S.admin.cls = el.dataset.v; S.admin.ctt = null; const y = window.scrollY; render(); window.scrollTo(0, y); },
-  axClsAdd: () => {
-    const v = (prompt('반을 "학년-반"으로 적어 주세요 (예: 2-3)') || '').trim().replace(/\s/g, '');
-    const m = v.match(/^(\d)\s*[-학년]*\s*(\d{1,2})반?$/);
-    if (!m) { if (v) toast('예: 2-3 처럼 적어 주세요.', 'err'); return; }
-    const key = m[1] + '-' + (+m[2]);
-    S.admin.extraCls = uniq((S.admin.extraCls || []).concat([key]));
-    S.admin.cls = key; S.admin.ctt = null;
-    const y = window.scrollY; render(); window.scrollTo(0, y);
-  },
-  axBrush: el => { S.admin.brush = el.dataset.v; const y = window.scrollY; render(); window.scrollTo(0, y); },
-  axCell: el => {
-    const [d, p] = el.dataset.v.split('|').map(Number);
-    S.admin.ctt[d][p] = S.admin.ctt[d][p] === S.admin.brush ? '' : S.admin.brush;
-    const y = window.scrollY; render(); window.scrollTo(0, y);
-  },
-  axTtClear: () => { if (!confirm('이 반 시간표를 모두 지울까요? (저장해야 반영돼요)')) return; S.admin.ctt = emptyTT(); const y = window.scrollY; render(); window.scrollTo(0, y); },
-  axTtSave: async el => {
-    await withBusy(el, async () => {
-      S.admin.data.settings = await api('adminSaveClass', S.admin.pw, S.admin.cls, S.admin.ctt);
-      const y = window.scrollY; render(); window.scrollTo(0, y);
-      toast(`${classLabel(S.admin.cls)} 시간표를 저장했어요. 학생 앱에 바로 들어가요! 🗓`);
-    });
-  },
   axSave: async el => {
     const ex = S.admin.exam;
     if (!ex.subjects.some(s => s.name.trim())) return toast('과목을 하나 이상 넣어 주세요.', 'err');
@@ -2823,30 +2766,37 @@ document.addEventListener('submit', async e => {
   e.preventDefault();
   const f = e.target, fd = Object.fromEntries(new FormData(f));
   const btn = f.querySelector('button[type=submit]');
-  if (f.id === 'authForm') {
+  if (f.id === 'startForm') {
     await withBusy(btn, async () => {
-      const r = f.dataset.mode === 'join'
-        ? await api('register', fd.code.trim(), fd.sid.trim(), fd.name.trim(), fd.pw)
-        : await api('login', fd.sid.trim(), fd.pw);
+      const r = await api('start', fd.name.trim());
       S.token = r.token; store.set(TOKEN_KEY, r.token);
       await loadState();
-      S.view = f.dataset.mode === 'join' ? 'setup' : 'home';
+      S.view = 'setup';
       render();
-      if (f.dataset.mode === 'join') { confetti(); toast('환영해요, ' + S.me.name + '! 🌱'); }
+      confetti(); toast('환영해요, ' + S.me.name + '! 🌱 첫 시간 미션부터 해 보자');
     });
-  }
-  if (f.id === 'adminForm') {
-    await withBusy(btn, async () => { S.admin.pw = fd.pw; S.admin.data = await api('adminGetData', fd.pw); render(); });
   }
 });
 
 document.addEventListener('change', async e => {
   const el = e.target;
+  if (el.id === 'importFile') {
+    const file = el.files && el.files[0]; if (!file) return;
+    try {
+      const data = JSON.parse(await file.text());
+      if (S.me && !confirm('지금 이 폰의 기록을 백업 파일 내용으로 바꿀까요?')) return;
+      const r = await api('importAll', S.token, data);
+      S.token = r.token; store.set(TOKEN_KEY, r.token);
+      await loadState(); closeModal(); S.view = 'home'; render();
+      toast('백업을 불러왔어요! 이어서 공부하자 📚');
+    } catch (err) { toast(err.message.includes('JSON') ? '백업 파일을 읽지 못했어요.' : err.message, 'err'); }
+    return;
+  }
   if (el.id === 'qimgFile') {
     const file = el.files && el.files[0]; if (!file) return;
     try {
-      // 글씨가 확대해도 잘 보이게 크게 저장 (체험 모드는 기기 저장 공간 때문에 조금 작게)
-      S.qdraft.image = IS_LIVE ? await compressImage(file, 2000, .85) : await compressImage(file, 1000, .7);
+      // 글씨가 확대해도 잘 보이게 선명하게 (사진은 폰 안의 큰 저장소에 따로 보관해요)
+      S.qdraft.image = await compressImage(file, 1800, .82);
       render();
     } catch (err) { toast(err.message, 'err'); }
     return;
@@ -2860,11 +2810,6 @@ document.addEventListener('change', async e => {
   if (el.dataset.exam === 'start') S.examDraft.start = el.value;
   if (el.dataset.sub != null) S.examDraft.subjects[+el.dataset.sub][el.dataset.f] = el.value;
   if (el.dataset.f === 'teacher' && S.examDraft) { syncExam({ exam:S.examDraft }); const y = window.scrollY; render(); window.scrollTo(0, y); }
-  // 선생님이 넣어 준 날짜를 학생이 고치면 '내가 고친 날짜'로 표시해서 그대로 지켜 줘요
-  if ((el.dataset.f === 'date' || el.dataset.f === 'period') && el.dataset.sub != null && S.examDraft && teacherSchedule().length) {
-    const s = S.examDraft.subjects[+el.dataset.sub];
-    if (!s.myDate) { s.myDate = true; const y = window.scrollY; render(); window.scrollTo(0, y); }
-  }
   if (el.dataset.bk != null) S.booksDraft[+el.dataset.bk][el.dataset.f] = el.type === 'checkbox' ? el.checked : +el.value;
   if (el.id === 'adminDate') { S.admin.date = el.value; render(); }
   if (el.id === 'onlyPending') { S.admin.onlyPending = el.checked; render(); }
@@ -2901,7 +2846,6 @@ document.addEventListener('keydown', e => {
    8. 시작
    ========================================================= */
 (async function init() {
-  if (!IS_LIVE) $('#demoBar').classList.remove('hidden');
   if (!S.token) return render();
   $('#app').innerHTML = '<div class="spinner"></div>';
   try { await loadState(); }
@@ -2909,6 +2853,14 @@ document.addEventListener('keydown', e => {
   render();
   if (S.me) checkAway(); // 집중 모드 중에 앱을 완전히 닫았다가 다시 연 경우
 })();
+
+// 인터넷 없이도 열리게: 한 번 열면 앱을 폰에 저장해 둬요 (solo 쪽만, 반 앱은 건드리지 않아요)
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('solo-sw.js', { scope:'./solo' }).catch(() => {});
+  });
+}
+window.addEventListener('offline', () => toast('📴 인터넷이 끊겼어요. 그래도 기록은 폰에 잘 저장돼요!'));
 </script>
 </body>
 </html>
