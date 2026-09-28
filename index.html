@@ -652,7 +652,7 @@ function fmtAway(ms) { const s = Math.round(ms / 1000); return s < 60 ? s + '초
    3. 서버 연결 / 체험 모드
    ========================================================= */
 // ★ 구글 Apps Script 웹 앱 주소 (배포 → 웹 앱 URL). 비워 두면 '체험 모드'로 동작해요.
-const API_URL = 'https://script.google.com/macros/s/AKfycbw2lk5Fzh2cWl_jry6-d9YR2DHV8Jr2ORVhF2iD3JIp1-1tadJj_BrHYgdKU0eg5Yt0/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbya0u97ktyQmMr-3fG6Ta1MmHZC7AcHBnqD4MWtrP7d5hYJeD-F6X3-oSBNe9jkzjvR/exec';
 const IS_LIVE = !!API_URL && !/[?&]demo/.test(location.search); // 주소 끝에 ?demo 를 붙이면 체험 모드
 const DRIVE_URL = 'https://drive.google.com';
 const TOKEN_KEY = IS_LIVE ? 'token' : 'demo_token'; // 실제 로그인과 체험 모드 로그인이 섞이지 않게
