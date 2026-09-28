@@ -1007,6 +1007,16 @@ const Mock = (() => {
       const db = load(); if (pw !== db.settings.admin) throw new Error('선생님 비밀번호가 틀렸어요.');
       const l = db.logs.find(x => x.id === id); if (l) l.st = st; save(db); return true;
     },
+    adminDeleteStudent(pw, sid) {
+      const db = load(); if (pw !== db.settings.admin) throw new Error('선생님 비밀번호가 틀렸어요.');
+      if (!db.students.some(x => x.sid === sid)) throw new Error('학생을 찾지 못했어요.');
+      db.students = db.students.filter(x => x.sid !== sid);
+      delete db.profiles[sid];
+      const before = db.logs.length;
+      db.logs = db.logs.filter(l => l.sid !== sid);
+      db.questions.forEach(q => { if (q.sid === sid) q.st = '삭제'; });
+      save(db); return { sid, logs:before - db.logs.length };
+    },
     adminResetPassword(pw, sid) {
       const db = load(); if (pw !== db.settings.admin) throw new Error('선생님 비밀번호가 틀렸어요.');
       const s = db.students.find(x => x.sid === sid); if (s) { s.pw = ''; s.token = ''; } save(db); return true;
@@ -2208,13 +2218,19 @@ function viewAdmin() {
       : '<p class="small muted">아직 가입한 학생이 없어요. [＋ 반 추가]로 반을 먼저 만들 수 있어요.</p>'}
     </div>
 
-    <div class="card"><label class="field" style="margin:0"><span>날짜</span><input class="input" type="date" id="adminDate" value="${date}"></label></div>
-    <div class="card"><h3>학생별 현황 (${date.slice(5).replace('-', '/')})</h3>
+    <div class="card"><h3 style="margin-top:0">학생별 현황</h3>
+      <div class="small muted" style="margin-bottom:6px">📆 이 날짜의 플래너·노트·공부시간과 아래 <b>사진 인증</b>을 보여 줘요</div>
+      <div class="row" style="gap:6px;margin-bottom:8px">
+        <button class="btn ghost sm" data-act="adminDay" data-v="-1" aria-label="전날">◀</button>
+        <input class="input sm grow" type="date" id="adminDate" value="${date}">
+        <button class="btn ghost sm" data-act="adminDay" data-v="1" aria-label="다음 날">▶</button>
+        ${date !== D.today ? '<button class="btn sm" data-act="adminDay" data-v="0">오늘</button>' : ''}
+      </div>
       <div style="overflow-x:auto"><table class="atable"><thead><tr><th>학생</th><th>📒</th><th>📝</th><th>⏱</th><th>🔥</th><th>XP</th></tr></thead>
       <tbody>${rows.map(r => `<tr><td>${esc(r.s.name)}<br><span class="small muted">${r.s.sid}</span></td><td>${r.x.planner ? '✅' : '·'}</td><td>${r.x.note ? '✅' : '·'}</td><td>${r.x.study ? fmtMin(r.x.study) : '·'}</td><td>${r.st.streak}</td><td>${r.st.xp}</td></tr>`).join('') || '<tr><td colspan="6" class="muted">가입한 학생이 없어요</td></tr>'}</tbody></table></div>
     </div>
     <div class="card">
-      <div class="row between"><h3 style="margin:0">사진 인증 확인</h3>
+      <div class="row between"><h3 style="margin:0">사진 인증 확인 <span class="small muted">${+date.slice(5, 7)}/${+date.slice(8)}</span></h3>
         <label class="small"><input type="checkbox" id="onlyPending" ${A.onlyPending ? 'checked' : ''}> 대기만</label></div>
       ${photos.length ? photos.map(l => `<div class="photo-card">
         ${IS_LIVE ? `<a class="th" href="${DRIVE_URL}/file/d/${encodeURIComponent(l.fileId)}/view" target="_blank">${thumb(l)}</a>` : `<div class="th">${thumb(l)}</div>`}
@@ -2237,7 +2253,7 @@ function viewAdmin() {
       : '<p class="small muted">아직 만든 문제가 없어요.</p>'}
     </div>
     <div class="card"><h3>학생 관리</h3><p class="small muted" style="margin-top:0">비밀번호를 잊은 학생은 초기화 후 같은 학번으로 다시 가입하면 돼요. (기록은 그대로 남아요)</p>
-      <div class="list">${D.students.map(s => `<div class="it"><span class="grow">${esc(s.name)} <span class="small muted">${s.sid}</span></span><button class="btn ghost sm" data-act="adminReset" data-v="${s.sid}">비번 초기화</button></div>`).join('')}</div>
+      <div class="list">${D.students.map(s => `<div class="it"><span class="grow">${esc(s.name)} <span class="small muted">${s.sid}</span></span><button class="btn ghost sm" data-act="adminReset" data-v="${s.sid}">비번 초기화</button><button class="btn ghost sm" style="color:var(--red)" data-act="adminDelete" data-v="${s.sid}">🗑 삭제</button></div>`).join('')}</div>
     </div>
     <div class="card">
       <h3>🌱 새 스터디 시작하기 <span class="small muted">(새 학기 · 새 기수)</span></h3>
@@ -2807,6 +2823,23 @@ const ACT = {
     });
   },
   adminQAll: () => { S.admin.qAll = true; render(); },
+  adminDay: el => {
+    const A = S.admin, n = +el.dataset.v;
+    A.date = n === 0 ? A.data.today : addDays(A.date || A.data.today, n);
+    const y = window.scrollY; render(); window.scrollTo(0, y);
+  },
+  adminDelete: async el => {
+    const sid = el.dataset.v;
+    const s = S.admin.data.students.find(x => x.sid === sid) || { name:'' };
+    if (!confirm(`${sid} ${s.name} 학생을 삭제할까요?\n\n· 가입 정보, 공부 기록, 인증, 회독·단권화, 만든 문제가 모두 지워져요\n· 되돌릴 수 없어요\n· 지운 뒤 같은 학번으로 다시 가입할 수 있어요`)) return;
+    if (!confirm(`정말 ${sid} ${s.name} 학생을 삭제할까요?`)) return;
+    await withBusy(el, async () => {
+      await api('adminDeleteStudent', S.admin.pw, sid);
+      S.admin.data = await api('adminGetData', S.admin.pw);
+      const y = window.scrollY; render(); window.scrollTo(0, y);
+      toast(`${sid} ${s.name} 학생을 삭제했어요.`);
+    });
+  },
   adminReset: async el => {
     if (!confirm(el.dataset.v + ' 학생의 비밀번호를 초기화할까요?')) return;
     await withBusy(el, async () => { await api('adminResetPassword', S.admin.pw, el.dataset.v); toast('초기화했어요. 같은 학번으로 다시 가입하면 돼요.'); });
