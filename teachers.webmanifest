@@ -1,0 +1,17 @@
+{
+  "id": "teachers-class",
+  "name": "성적을 부탁해 티처스",
+  "short_name": "티처스",
+  "description": "나미쌤과 함께하는 4주 공부방법 — 플래너, 타이머, 회독, 단권화, 나만의 문제",
+  "start_url": "index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF9F0",
+  "theme_color": "#1F2B5B",
+  "lang": "ko",
+  "icons": [
+    { "src": "solo-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "solo-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
