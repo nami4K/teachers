@@ -5,6 +5,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>성적을 부탁해 티처스</title>
+<link rel="manifest" href="teachers.webmanifest">
+<meta name="theme-color" content="#1F2B5B">
+<link rel="icon" type="image/png" href="solo-icon-192.png">
+<link rel="apple-touch-icon" href="solo-icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="티처스">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
@@ -193,6 +200,36 @@ nav.tabs button.on .ic{filter:none;opacity:1;transform:translateY(-1px)}
 .rv{padding:9px 4px;border-bottom:1px dashed var(--line)}
 .rv:last-child{border-bottom:0}
 .rv.today{background:var(--yellow-soft);border-radius:12px;padding:9px 8px;border-bottom-color:transparent}
+
+/* 되돌리기 바 · 친구 사진 · 나미쌤 한마디 */
+#undoBar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom));z-index:40;background:var(--navy);color:#fff;border-radius:14px;padding:10px 12px 10px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 24px rgba(0,0,0,.25);font-size:14px;max-width:92vw;animation:up .2s ease-out}
+#undoBar button{background:var(--yellow);color:var(--navy);font-family:'Jua';border-radius:10px;padding:6px 12px;white-space:nowrap}
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.gal .ph{position:relative;aspect-ratio:3/4;border-radius:10px;overflow:hidden;background:#F4F1EA;display:grid;place-items:center;cursor:zoom-in;border:1px solid var(--line)}
+.gal .ph img{width:100%;height:100%;object-fit:cover}
+.gal .ph .nm{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(0,0,0,.55));color:#fff;font-size:11px;padding:10px 6px 4px;text-align:left}
+.notice{background:linear-gradient(135deg,#FFF4CC,#FDE3EC);border:1.5px solid #F4E1A0;border-radius:var(--radius);padding:14px 16px;margin-bottom:14px;box-shadow:var(--shadow)}
+.notice .t{white-space:pre-line;font-size:15px;line-height:1.6;margin-top:4px}
+.peekbar{background:linear-gradient(90deg,#E84E89,#F08A5D);color:#fff;padding:8px 0 6px}
+.peekbar .input{background:#fff;border:0;color:var(--ink,#222);min-width:0}
+.phw{display:flex;flex-direction:column;gap:4px;min-width:0}
+.phw .tag.st{align-self:flex-start;font-size:11px;padding:1px 7px}
+.phw .sh{font-size:11px;padding:4px 2px;border-radius:8px;border:1px solid var(--line);background:#fff;white-space:nowrap}
+.tipbody{margin-top:10px;font-size:14px;line-height:1.65}
+.tipl{margin:0;padding-left:22px}
+.tipl li{margin-bottom:10px}
+.tipl li::marker{font-family:'Jua';color:var(--pink)}
+.stars>div,.pens>div{margin:4px 0}
+.hl{padding:1px 5px;border-radius:4px;font-weight:700;white-space:nowrap}
+.hl.g{background:#BDF5B5}.hl.y{background:#FFF27A}.hl.p{background:#FFC2DD}
+.pen{font-weight:700;display:inline-block;min-width:64px}
+.pen.k{color:#222}.pen.b{color:#2F6FD6}.pen.g{color:#1E9E5A}.pen.r{color:#E0413A}
+.rsteps{display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:13px}
+.rset{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px}
+.sus{background:#FCE3E1;color:var(--red);border-radius:6px;padding:1px 6px;font-size:11.5px}
+.istep{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px dashed var(--line);font-size:15px;line-height:1.5}
+.istep > b{width:30px;height:30px;border-radius:50%;background:var(--pink);color:#fff;display:grid;place-items:center;font-family:'Jua';font-weight:400;flex:none}
+.ikey{display:inline-block;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:1px 8px;margin-top:4px;font-size:13px}
 
 /* ranking */
 .seg{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
@@ -454,7 +491,7 @@ const LEVELS = [
   { xp:4500, n:'전설의 꽃', e:'🏵️' },
 ];
 
-const XP = { PLANNER:20, NOTE:30, ROUND:10, DAN:5, TIP:5, SETUP:50, PERFECT:30, QMAKE:10, QCORRECT:2, QHALF:1, QPERFECT:10, QCREDIT:1, FOCUS:10 };
+const XP = { PLANNER:20, NOTE:30, PROOF:15, ROUND:10, DAN:5, TIP:5, SETUP:50, PERFECT:30, QMAKE:10, QCORRECT:2, QHALF:1, QPERFECT:10, QCREDIT:1, FOCUS:10 };
 // 단권화 3단계: 소단원(페이지)마다 어디까지 했는지
 const DAN_STEPS = [
   { e:'📖', n:'1회독·필기', d:'그 페이지까지 한 번 읽으며 학습지·필기를 교과서에 옮겼어요' },
@@ -462,8 +499,15 @@ const DAN_STEPS = [
   { e:'📝', n:'단권화 노트', d:'문제 푼 것(틀린 것·새로 안 것)을 단권화 노트에 다시 썼어요' },
 ];
 const NO_DAN_DEFAULT = ['수학', '영어']; // 처음엔 단권화 체크를 꺼 두는 과목 (학생이 켤 수 있어요)
-// 하루 최대치: 문제 만들기 XP는 5문제까지, 게임 XP 60, 내 문제가 맞혀져서 받는 XP 30, 집중 보너스 3번
-const LIMIT = { QMAKE:5, GAME:60, QCREDIT:30, FOCUS:3 };
+// 하루 최대치: 문제 만들기 XP는 5문제까지, 게임 XP 60, 내 문제가 맞혀져서 받는 XP 30, 집중 보너스 3번, 공부 인증 3장
+const LIMIT = { QMAKE:5, GAME:60, QCREDIT:30, FOCUS:3, PROOF:3 };
+// 사진 인증 종류 (선생님이 승인/반려)
+const PHOTO_KINDS = [
+  { k:'PLANNER', e:'📒', n:'플래너' },
+  { k:'NOTE', e:'📝', n:'배움노트' },
+  { k:'PROOF', e:'📚', n:'공부 인증' },
+];
+const photoKind = t => PHOTO_KINDS.find(x => x.k === t);
 
 const ALL_SUBJECTS = ['국어', '영어', '수학', '사회', '역사', '과학', '도덕', '기술가정', '정보', '한문', '음악', '미술', '체육', '기타'];
 
@@ -496,8 +540,7 @@ const BADGES = [
   { id:'books', e:'🗂️', n:'교재 정리왕', d:'회독판을 만들었어요', ok:s=>s.setups.has('books') },
   { id:'r1', e:'🔁', n:'첫 회독', d:'회독 칸을 처음 채웠어요', ok:s=>s.roundsNet>=1 },
   { id:'r30', e:'🌀', n:'회독 30칸', d:'회독 칸 30개를 채웠어요', ok:s=>s.roundsNet>=30 },
-  { id:'dan1', e:'📒', n:'단권화 완성', d:'소단원 하나의 단권화 3단계를 모두 끝냈어요', ok:s=>s.danFull>=1 },
-  { id:'dan5', e:'📚', n:'단권화 장인', d:'소단원 5개의 단권화를 완성했어요', ok:s=>s.danFull>=5 },
+  { id:'pf10', e:'📚', n:'공부 인증 10번', d:'공부한 것을 사진으로 10번 인증했어요', ok:s=>s.proofTotal>=10 },
   { id:'s3', e:'🔥', n:'3일 연속', d:'3일 연속 인증했어요', ok:s=>s.bestStreak>=3 },
   { id:'s7', e:'🌷', n:'7일 연속', d:'일주일 내내 해냈어요', ok:s=>s.bestStreak>=7 },
   { id:'s14', e:'🌸', n:'14일 연속', d:'2주 연속! 습관이 됐어요', ok:s=>s.bestStreak>=14 },
@@ -589,6 +632,98 @@ function toast(msg, kind) {
 function openModal(html) {
   $('#modalRoot').innerHTML = `<div class="modal-bg" data-act="closeModalBg"><div class="modal"><button class="x" data-act="closeModal" aria-label="닫기">✕</button>${html}</div></div>`;
 }
+// 실수로 누른 것 바로 되돌리기 (몇 초 동안만 보여요)
+let undoTimer = null;
+function showUndo(text, fn) {
+  hideUndo();
+  const el = document.createElement('div');
+  el.id = 'undoBar';
+  el.innerHTML = `<span>${esc(text)}</span><button>↺ 되돌리기</button>`;
+  el.querySelector('button').onclick = () => { hideUndo(); fn(); };
+  document.body.appendChild(el);
+  undoTimer = setTimeout(hideUndo, 6000);
+}
+function hideUndo() { clearTimeout(undoTimer); const el = $('#undoBar'); if (el) el.remove(); }
+
+// 나미쌤 한마디: 전체 · 우리 반 · 나에게 (학생에게는 자기 반·자기 것만 와요)
+function noticeList() {
+  const out = [];
+  const n = S.settings && S.settings.notice;
+  if (n && n.text) out.push({ key:'all', icon:'📣', label:'전체', text:n.text, at:n.at });
+  (S.messages || []).forEach(m => out.push({ key:m.key, icon:m.scope === 'me' ? '💌' : '🏫', label:m.scope === 'me' ? '나에게' : '우리 반', text:m.text, at:m.at }));
+  return out;
+}
+const noticeHtml = x => `<div class="notice"><div class="row between"><b class="jua" style="font-size:16px">${x.icon} 나미쌤 한마디 <span class="small muted" style="font-family:inherit">· ${x.label}</span></b><span class="small muted">${esc(String(x.at).slice(5, 10).replace('-', '/'))}</span></div><div class="t">${esc(x.text)}</div></div>`;
+// 새 메시지가 있으면 앱을 켤 때 한 번 팝업으로
+function showNoticePopup() {
+  const seenKey = 'notice_seen_' + (S.me ? S.me.sid : ''); // 한 폰을 여러 학생이 써도 각자 따로
+  const seen = store.get(seenKey, {});
+  const fresh = noticeList().filter(x => seen[x.key] !== x.at);
+  if (!fresh.length) return;
+  fresh.forEach(x => { seen[x.key] = x.at; });
+  store.set(seenKey, seen);
+  openModal(`<div class="center">${MASCOT.replace('<svg', '<svg style="width:90px;height:90px"')}</div>
+    <h2 class="center" style="margin-top:4px">나미쌤이 보낸 한마디</h2>
+    ${fresh.map(noticeHtml).join('')}
+    <button class="btn block" data-act="closeModal">알겠어요! 💪</button>`);
+}
+
+/* 📲 홈 화면에 앱 설치하기 안내 (폰 종류를 알아보고 맞는 순서를 보여 줘요) */
+const UA = navigator.userAgent || '';
+const PLAT = {
+  ios: /iPhone|iPad|iPod/i.test(UA) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1),
+  samsung: /SamsungBrowser/i.test(UA),
+  kakao: /KAKAOTALK/i.test(UA),
+  // 카카오톡·인스타·네이버 앱 등 '앱 안의 브라우저'는 설치가 안 되고 로그인이 잘 풀려요
+  inapp: /KAKAOTALK|Instagram|FBAN|FBAV|Line\/|NAVER\(inapp|DaumApps|everytimeApp|; wv\)/i.test(UA),
+};
+const isInstalled = () => (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+let installEvt = null; // 안드로이드 크롬: 버튼 한 번으로 설치
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (S.me && S.view === 'home') render(); });
+window.addEventListener('appinstalled', () => { installEvt = null; toast('📲 설치 완료! 이제 홈 화면의 티처스 아이콘으로 열어요'); if (S.me) render(); });
+
+function installGuideHtml(tab) {
+  tab = tab || (PLAT.ios ? 'ios' : PLAT.samsung ? 'samsung' : 'android');
+  const guides = {
+    ios: [
+      '<b>사파리(Safari)</b>로 열어요 <span class="muted">(파란 나침반 모양 앱)</span>',
+      '<b>공유 버튼</b>을 눌러요 <span class="ikey">⬆︎ 네모에서 화살표가 위로 나온 모양</span><br><span class="muted small">보통 화면 맨 아래 가운데에 있어요. 안 보이면 화면을 살짝 아래로 끌어 봐요. (주소창이 위에 있으면 오른쪽 위)</span>',
+      '메뉴를 위로 밀어 올려서 <b>"홈 화면에 추가"</b>를 눌러요 <span class="ikey">➕ 홈 화면에 추가</span>',
+      '오른쪽 위 <b>"추가"</b>를 누르면 끝! 🎉<br><span class="muted small">홈 화면에 나미쌤 아이콘(티처스)이 생겨요. 이제 그 아이콘으로 열어요.</span>',
+    ],
+    android: [
+      '<b>크롬(Chrome)</b>으로 열어요',
+      '오른쪽 위 <b>점 세 개</b>를 눌러요 <span class="ikey">⋮</span>',
+      '<b>"홈 화면에 추가"</b> 또는 <b>"앱 설치"</b>를 눌러요',
+      '<b>"설치"</b>(또는 "추가")를 누르면 끝! 🎉<br><span class="muted small">홈 화면에 나미쌤 아이콘(티처스)이 생겨요.</span>',
+    ],
+    samsung: [
+      '<b>삼성 인터넷</b>으로 열어요',
+      '아래쪽 <b>메뉴</b>를 눌러요 <span class="ikey">≡</span>',
+      '<b>"현재 페이지 추가"</b> → <b>"홈 화면"</b>을 눌러요',
+      '<b>"추가"</b>를 누르면 끝! 🎉',
+    ],
+  };
+  return `<h2>📲 앱처럼 설치하기</h2>
+    <p class="small muted" style="margin-top:0">홈 화면에 추가하면 <b>앱처럼 바로 열리고</b>, <b>로그인도 계속 유지</b>돼요. 1분이면 돼요!</p>
+    ${PLAT.inapp ? `<div class="card pink small" style="box-shadow:none">⚠️ 지금 <b>${PLAT.kakao ? '카카오톡' : '다른 앱'} 안의 브라우저</b>로 열려 있어요. 여기서는 설치가 안 되고 로그인이 자꾸 풀려요.
+      ${PLAT.kakao ? '<button class="btn block mt8" data-act="openExternal">🌐 크롬·사파리로 열기</button>' : '<br>오른쪽 위 <b>⋮</b> 또는 <b>···</b> 메뉴에서 <b>"다른 브라우저로 열기"</b>를 눌러 주세요.'}</div>` : ''}
+    ${installEvt && !PLAT.ios ? '<button class="btn block" data-act="installNow">📲 버튼 한 번으로 설치하기</button><p class="small muted center">안 되면 아래 순서대로 해 봐요</p>' : ''}
+    <div class="toggle" style="width:100%;margin:8px 0">${[['ios', '🍎 아이폰'], ['android', '🤖 안드로이드'], ['samsung', '🌐 삼성 인터넷']].map(([k, n]) => `<button style="flex:1" class="${k === tab ? 'on' : ''}" data-act="installTab" data-v="${k}">${n}</button>`).join('')}</div>
+    <div>${guides[tab].map((g, i) => `<div class="istep"><b>${i + 1}</b><div>${g}</div></div>`).join('')}</div>
+    <button class="btn block mt12" data-act="closeModal">알겠어요!</button>`;
+}
+function openInstallGuide(tab) { openModal(installGuideHtml(tab)); }
+function installCard() {
+  if (isInstalled() || store.get('install_later', '') > todayStr()) return '';
+  return `<div class="card ${PLAT.inapp ? 'pink' : 'blue'}">
+    <div class="row"><span style="font-size:30px">📲</span><div class="grow"><b class="jua" style="font-size:16px">${PLAT.inapp ? (PLAT.kakao ? '카카오톡' : '다른 앱') + ' 안에서 열려 있어요' : '앱처럼 설치하기'}</b>
+      <div class="small muted">${PLAT.inapp ? '여기선 로그인이 자꾸 풀려요. 크롬·사파리로 열어 주세요!' : '홈 화면에 추가하면 로그인이 안 풀려요 (1분)'}</div></div></div>
+    <div class="row mt8"><button class="btn ghost sm" data-act="installLater">다음에</button><span class="grow"></span>
+      ${PLAT.kakao ? '<button class="btn sm" data-act="openExternal">🌐 밖에서 열기</button>' : installEvt && !PLAT.ios ? '<button class="btn sm" data-act="installNow">📲 설치하기</button>' : '<button class="btn sm" data-act="installGuide">방법 보기</button>'}</div>
+  </div>`;
+}
+
 function closeModal() {
   $('#modalRoot').innerHTML = '';
   if (S.dirty) { S.dirty = false; const y = window.scrollY; render(); window.scrollTo(0, y); }
@@ -709,18 +844,40 @@ const IS_LIVE = !!API_URL && !/[?&]demo/.test(location.search); // 주소 끝에
 const DRIVE_URL = 'https://drive.google.com';
 const TOKEN_KEY = IS_LIVE ? 'token' : 'demo_token'; // 실제 로그인과 체험 모드 로그인이 섞이지 않게
 
-function api(fn, ...args) {
+// 불러오기만 하는 요청은 실패하면 자동으로 다시 시도해요 (여러 명이 동시에 접속하면 구글 서버가 잠깐 거절할 때가 있어요)
+// 저장하는 요청은 두 번 저장될 수 있어서 자동으로 다시 하지 않아요
+const RETRY_FNS = ['login', 'getState', 'getQuestionImage', 'getSharedPhoto', 'adminGetData', 'adminGetStudent', 'adminGetQuestionImage', 'adminGetPhoto'];
+const BUSY_MSG = '서버에 연결하지 못했어요. 친구들이 한꺼번에 들어오면 잠깐 그럴 수 있어요. 잠시 후 다시 해 주세요.';
+async function api(fn, ...args) {
+  // 👀 선생님의 '학생 화면 보기': 사진은 선생님 비밀번호로 불러오고, 저장하는 기능은 막아요 (보기만)
+  if (S.peek && !/^admin/.test(fn)) {
+    if (fn === 'getSharedPhoto') return api('adminGetPhoto', S.admin.pw, args[1], args[2]);
+    if (fn === 'getQuestionImage') return api('adminGetQuestionImage', S.admin.pw, args[1]);
+    if (fn === 'readTip') return null;
+    throw new Error('👀 학생 화면 보기 중이라 바꿀 수 없어요. (보기만 돼요)');
+  }
   if (!IS_LIVE) return Mock.call(fn, args);
-  // text/plain 으로 보내야 구글 서버가 다른 주소(GitHub)에서 온 요청도 받아 줘요
-  return fetch(API_URL, { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body:JSON.stringify({ fn, args }) })
-    .catch(() => { throw new Error('서버에 연결하지 못했어요. 인터넷 연결을 확인하고 잠시 후 다시 해 주세요.'); })
-    .then(r => { if (!r.ok) throw new Error('서버에 연결하지 못했어요. 잠시 후 다시 해 주세요.'); return r.text(); })
-    .then(txt => {
-      let res;
-      try { res = JSON.parse(txt); } catch (e) { throw new Error('서버 응답이 이상해요. 선생님께 알려 주세요. (Code.gs 새 버전 배포 확인)'); }
-      if (!res.ok) throw new Error(res.error || '알 수 없는 오류가 났어요.');
-      return res.data;
-    });
+  const tries = RETRY_FNS.includes(fn) ? 3 : 1;
+  let lastErr;
+  for (let k = 0; k < tries; k++) {
+    if (k) await new Promise(r => setTimeout(r, 1200 * k + Math.random() * 800));
+    let txt;
+    try {
+      // text/plain 으로 보내야 구글 서버가 다른 주소(GitHub)에서 온 요청도 받아 줘요
+      const r = await fetch(API_URL, { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body:JSON.stringify({ fn, args }) });
+      if (!r.ok) throw new Error(BUSY_MSG);
+      txt = await r.text();
+    } catch (e) { lastErr = new Error(navigator.onLine === false ? '인터넷이 끊겼어요. 연결을 확인해 주세요.' : BUSY_MSG); lastErr.network = true; continue; }
+    let res;
+    try { res = JSON.parse(txt); } catch (e) { lastErr = new Error(BUSY_MSG); lastErr.network = true; continue; }
+    if (!res.ok) {
+      const err = new Error(res.error || '알 수 없는 오류가 났어요.');
+      if (/잠깐 바빠요/.test(err.message)) { err.network = true; lastErr = err; continue; }
+      throw err;
+    }
+    return res.data;
+  }
+  throw lastErr;
 }
 
 // 체험 모드: 구글 서버 없이 이 기기(localStorage)에서만 동작해요.
@@ -817,11 +974,11 @@ const Mock = (() => {
     return s;
   }
   function log(db, s, type, v, m, extra) {
-    const l = Object.assign({ id:uid(), ts:nowStr(), d:todayStr(), sid:s.sid, type, v, m, st:(type === 'PLANNER' || type === 'NOTE') ? '대기' : '' }, extra || {});
+    const l = Object.assign({ id:uid(), ts:nowStr(), d:todayStr(), sid:s.sid, type, v, m, st:photoKind(type) ? '대기' : '' }, extra || {});
     db.logs.push(l);
     return l;
   }
-  const pub = l => Object.assign({ id:l.id, ts:l.ts, d:l.d, sid:l.sid, type:l.type, v:l.v, m:l.m, st:l.st }, l.o != null ? { o:l.o } : {});
+  const pub = l => Object.assign({ id:l.id, ts:l.ts, d:l.d, sid:l.sid, type:l.type, v:l.v, m:l.m, st:l.st }, l.o != null ? { o:l.o } : {}, l.p ? { p:1 } : {});
   const pubQ = q => ({ id:q.id, d:q.d, sid:q.sid, name:q.name, subj:q.subj, type:q.type, q:q.q, a:q.a, opts:q.opts, exp:q.exp, st:q.st, rep:(q.reporters || []).length, img:q.img ? 1 : 0 });
   const getImg = id => { const src = store.get('qimg_' + id, ''); if (!src) throw new Error('사진을 찾지 못했어요.'); return src; };
   const settingsOut = db => { const { code, admin, ...rest } = db.settings; return rest; };
@@ -848,7 +1005,9 @@ const Mock = (() => {
     },
     getState(token) {
       const db = load(); const s = me(db, token);
-      return { me:{ sid:s.sid, name:s.name }, settings:settingsOut(db), profile:db.profiles[s.sid] || {},
+      const msgs = db.messages || {}, cls = classOf(s.sid);
+      const messages = [].concat(msgs['c:' + cls] ? [Object.assign({ scope:'class', key:'c:' + cls }, msgs['c:' + cls])] : [], msgs['s:' + s.sid] ? [Object.assign({ scope:'me', key:'s:' + s.sid }, msgs['s:' + s.sid])] : []);
+      return { me:{ sid:s.sid, name:s.name }, settings:settingsOut(db), profile:db.profiles[s.sid] || {}, messages,
         students:db.students.filter(x => x.pw).map(x => ({ sid:x.sid, name:x.name })), logs:db.logs.map(pub),
         questions:db.questions.filter(q => q.st === '공개' || q.st === '보관' || (q.st === '숨김' && q.sid === s.sid)).map(pubQ), today:todayStr() };
     },
@@ -967,6 +1126,29 @@ const Mock = (() => {
       const l = log(db, s, 'ROUND', delta > 0 ? 1 : -1, key); save(db);
       return { count:after, log:pub(l) };
     },
+    setRound(token, keys, count) {
+      const db = load(); const s = me(db, token);
+      const p = db.profiles[s.sid] = db.profiles[s.sid] || {};
+      p.rounds = p.rounds || {};
+      count = Math.floor(count); keys = [].concat(keys);
+      if (!(count >= 0)) throw new Error('회독 수를 숫자로 골라 주세요.');
+      if (keys.some(k => count > (p.rounds[k] || 0))) throw new Error('회독 수는 줄이기만 할 수 있어요. 늘릴 때는 칸을 눌러 주세요.');
+      const logs = [];
+      keys.forEach(k => { const before = p.rounds[k] || 0; if (before === count) return; p.rounds[k] = count; logs.push(pub(log(db, s, 'ROUND', count - before, k))); });
+      save(db); return { count, logs };
+    },
+    adminResetRecords(pw, opts) {
+      const db = load(); if (pw !== db.settings.admin) throw new Error('선생님 비밀번호가 틀렸어요.');
+      const sid = opts && opts.sid;
+      if (sid && !db.students.some(x => x.sid === sid)) throw new Error('학생을 찾지 못했어요.');
+      const before = db.logs.length;
+      db.logs = db.logs.filter(l => (sid && l.sid !== sid) || l.type === 'SETUP');
+      Object.keys(db.profiles).forEach(k => { if (!sid || k === sid) { db.profiles[k].rounds = {}; db.profiles[k].dan = {}; } });
+      let questions = 0;
+      if (opts && opts.questions) db.questions.forEach(q => { if ((!sid || q.sid === sid) && q.st !== '삭제' && q.st !== '보관') { q.st = '삭제'; questions++; } });
+      save(db);
+      return { logs:before - db.logs.length, questions, archiveUrl:'', archiveName:sid ? '' : '(체험 모드라 백업 파일은 안 만들어져요)' };
+    },
     setDan(token, key, step, on) {
       const db = load(); const s = me(db, token);
       const p = db.profiles[s.sid] = db.profiles[s.sid] || {};
@@ -990,22 +1172,75 @@ const Mock = (() => {
       save(db);
       return { code:db.settings.code, archiveUrl:'', archiveName:'티처스 보관 - ' + label + ' (체험 모드라 실제 파일은 안 만들어져요)' };
     },
-    async uploadPhoto(token, kind, dataUrl) {
+    async uploadPhoto(token, kind, dataUrl, share, memo) {
+      if (!photoKind(kind)) throw new Error('잘못된 사진 종류예요.');
       const thumb = await dataUrlThumb(dataUrl);
       const db = load(); const s = me(db, token);
-      const l = log(db, s, kind, 1, kind === 'PLANNER' ? '플래너' : '배움노트', { thumb });
+      const note = kind === 'PROOF' ? String(memo || '').trim().slice(0, 40) : '';
+      const l = log(db, s, kind, 1, note || { PLANNER:'플래너', NOTE:'배움노트', PROOF:'공부인증' }[kind], share ? { thumb, p:1 } : { thumb });
       save(db); return pub(l);
+    },
+    setPhotoPublic(token, id, on) {
+      const db = load(); const s = me(db, token);
+      const l = db.logs.find(x => x.id === id);
+      if (!l || l.sid !== s.sid) throw new Error('내 사진만 바꿀 수 있어요.');
+      if (on) l.p = 1; else delete l.p; save(db); return !!on;
+    },
+    getSharedPhoto(token, id) {
+      const db = load(); const s = me(db, token);
+      const l = db.logs.find(x => x.id === id);
+      if (!l || (l.sid !== s.sid && (!l.p || l.st === '반려'))) throw new Error('공개되지 않은 사진이에요.');
+      if (!l.thumb) throw new Error('체험 모드 예시라 사진이 없어요.');
+      return l.thumb;
+    },
+    adminGetPhoto(pw, id) {
+      const db = load(); if (pw !== db.settings.admin) throw new Error('선생님 비밀번호가 틀렸어요.');
+      const l = db.logs.find(x => x.id === id);
+      if (!l || !l.thumb) throw new Error('체험 모드 예시라 사진이 없어요.');
+      return l.thumb;
+    },
+    adminGetStudent(pw, sid) {
+      const db = load(); if (pw !== db.settings.admin) throw new Error('선생님 비밀번호가 틀렸어요.');
+      const st = db.students.find(x => x.sid === sid); if (!st) throw new Error('학생을 찾지 못했어요.');
+      return { student:{ sid:st.sid, name:st.name }, profile:db.profiles[sid] || {}, logs:db.logs.filter(l => l.sid === sid).map(pub) };
+    },
+    adminEditStudy(pw, id, minutes) {
+      const db = load(); if (pw !== db.settings.admin) throw new Error('선생님 비밀번호가 틀렸어요.');
+      const l = db.logs.find(x => x.id === id); if (!l || l.type !== 'STUDY') throw new Error('공부시간 기록이 아니에요.');
+      if (l.o == null) l.o = l.v;
+      l.v = Math.max(0, Math.min(300, Math.floor(minutes))); save(db); return pub(l);
+    },
+    adminSetRound(pw, sid, key, count) {
+      const db = load(); if (pw !== db.settings.admin) throw new Error('선생님 비밀번호가 틀렸어요.');
+      const st = db.students.find(x => x.sid === sid); if (!st) throw new Error('학생을 찾지 못했어요.');
+      const p = db.profiles[sid] = db.profiles[sid] || {}; p.rounds = p.rounds || {};
+      const before = p.rounds[key] || 0; count = Math.max(0, Math.min(10, count));
+      if (before === count) return { count, log:null };
+      p.rounds[key] = count;
+      const l = log(db, st, 'ROUND', count - before, key, { st:'선생님' }); save(db);
+      return { count, log:pub(l) };
+    },
+    adminSaveNotice(pw, text, target) {
+      const db = load(); if (pw !== db.settings.admin) throw new Error('선생님 비밀번호가 틀렸어요.');
+      text = String(text || '').trim().slice(0, 300); target = target || 'all';
+      db.messages = db.messages || {};
+      if (target === 'all') db.settings.notice = text ? { text, at:nowStr() } : null;
+      else if (text) db.messages[target] = { text, at:nowStr() }; else delete db.messages[target];
+      save(db); return { settings:settingsOut(db), messages:db.messages };
     },
     adminGetData(pw) {
       const db = load();
       if (pw !== db.settings.admin) throw new Error('선생님 비밀번호가 틀렸어요. (체험 모드: teacher)');
       return { settings:settingsOut(db), students:db.students.filter(x => x.pw).map(x => ({ sid:x.sid, name:x.name })),
         logs:db.logs.map(l => Object.assign(pub(l), { thumb:l.thumb || '' })),
-        questions:db.questions.filter(q => q.st !== '삭제').map(pubQ), today:todayStr() };
+        questions:db.questions.filter(q => q.st !== '삭제').map(pubQ), messages:db.messages || {}, today:todayStr() };
     },
     adminSetStatus(pw, id, st) {
       const db = load(); if (pw !== db.settings.admin) throw new Error('선생님 비밀번호가 틀렸어요.');
-      const l = db.logs.find(x => x.id === id); if (l) l.st = st; save(db); return true;
+      const ids = [].concat(id);
+      const hit = db.logs.filter(x => ids.includes(x.id)); hit.forEach(l => { l.st = st; });
+      if (!hit.length) throw new Error('기록을 찾지 못했어요.');
+      save(db); return hit.length;
     },
     adminDeleteStudent(pw, sid) {
       const db = load(); if (pw !== db.settings.admin) throw new Error('선생님 비밀번호가 틀렸어요.');
@@ -1113,7 +1348,7 @@ function levelOf(xp) {
   return { idx:i, lv:i + 1, n:cur.n, e:cur.e, next, pct: next ? (xp - cur.xp) / (next.xp - cur.xp) : 1 };
 }
 
-const emptyDay = () => ({ study:0, planner:false, note:false, rounds:0, plannerSt:'', noteSt:'', qmade:0, game:0, qCorrect:0, credit:0, focus:0 });
+const emptyDay = () => ({ study:0, planner:false, note:false, proof:0, rounds:0, plannerSt:'', noteSt:'', qmade:0, game:0, qCorrect:0, credit:0, focus:0 });
 function playInfo(l) {
   if (!l._p) { try { l._p = JSON.parse(l.m); } catch (e) { l._p = { n:l.v, ids:[] }; } }
   return l._p;
@@ -1153,6 +1388,7 @@ function computeStats(sid, logs, cap, qs) {
     else if (l.type === 'STUDY') { x.study += l.v; if (l.st === '집중' && l.v >= 25) x.focus++; }
     else if (l.type === 'PLANNER') { x.planner = true; x.plannerSt = l.st === '승인' || x.plannerSt === '승인' ? '승인' : '대기'; }
     else if (l.type === 'NOTE') { x.note = true; x.noteSt = l.st === '승인' || x.noteSt === '승인' ? '승인' : '대기'; }
+    else if (l.type === 'PROOF') x.proof++;
     else if (l.type === 'ROUND') { x.rounds += l.v; roundsNet += l.v; }
     else if (l.type === 'DAN') {
       danNet += l.v;
@@ -1164,17 +1400,18 @@ function computeStats(sid, logs, cap, qs) {
     else if (l.type === 'SETUP') setups.add(l.m);
   }
   let xp = 0, studyTotal = 0, perfectDays = 0, noteDays = 0;
-  let qTotal = 0, qCorrectTotal = 0, creditTotal = 0, focusTotal = 0;
+  let qTotal = 0, qCorrectTotal = 0, creditTotal = 0, focusTotal = 0, proofTotal = 0;
   const wk = weekStart(today), lwk = addDays(wk, -7);
   let week = 0, lastWeek = 0, weekRounds = 0, weekActive = 0, weekQMade = 0, weekQCorrect = 0;
-  const active = d => !!days[d] && (days[d].study > 0 || days[d].planner || days[d].note);
+  const active = d => !!days[d] && (days[d].study > 0 || days[d].planner || days[d].note || days[d].proof > 0);
   for (const d in days) {
     const x = days[d];
     const perfect = x.planner && x.note && x.study >= 30;
     xp += Math.min(x.study, cap) + (x.planner ? XP.PLANNER : 0) + (x.note ? XP.NOTE : 0) + (perfect ? XP.PERFECT : 0)
+      + Math.min(x.proof, LIMIT.PROOF) * XP.PROOF
       + Math.min(x.qmade, LIMIT.QMAKE) * XP.QMAKE + Math.min(x.game, LIMIT.GAME)
       + Math.min(x.credit, LIMIT.QCREDIT) * XP.QCREDIT + Math.min(x.focus, LIMIT.FOCUS) * XP.FOCUS;
-    studyTotal += x.study; perfectDays += perfect ? 1 : 0; noteDays += x.note ? 1 : 0;
+    studyTotal += x.study; perfectDays += perfect ? 1 : 0; noteDays += x.note ? 1 : 0; proofTotal += x.proof;
     qTotal += x.qmade; qCorrectTotal += x.qCorrect; creditTotal += x.credit; focusTotal += x.focus;
     if (d >= wk && d <= today) { week += x.study; weekRounds += x.rounds; weekQMade += x.qmade; weekQCorrect += x.qCorrect; if (active(d)) weekActive++; }
     else if (d >= lwk && d < wk) lastWeek += x.study;
@@ -1188,7 +1425,7 @@ function computeStats(sid, logs, cap, qs) {
   Object.keys(days).filter(active).sort().forEach(a => { run = prev && addDays(prev, 1) === a ? run + 1 : 1; bestStreak = Math.max(bestStreak, run); prev = a; });
   const t = days[today] || emptyDay();
   return { xp, studyTotal, perfectDays, noteDays, roundsNet, tips, setups, streak, bestStreak, week, lastWeek, weekRounds, weekActive,
-    qTotal, qCorrectTotal, creditTotal, focusTotal, weekQMade, weekQCorrect, danFull, today:t, days };
+    qTotal, qCorrectTotal, creditTotal, focusTotal, proofTotal, weekQMade, weekQCorrect, danFull, today:t, days };
 }
 
 const myStats = () => computeStats(S.me.sid, S.logs, S.settings.dailyStudyXpCap);
@@ -1277,9 +1514,14 @@ function render() {
   const body = (views[S.view] || viewHome)();
   const examDday = ddayText(S.profile.exam.start || S.settings.examStart);
   const unread = TIPS.filter(t => !myStats().tips.has(t.id)).length;
-  app.innerHTML = `
+  const peekBar = S.peek ? `<div class="peekbar"><div class="wrap row" style="gap:6px">
+      <span style="flex:none">👀</span>
+      <select class="input sm grow" id="peekSid" aria-label="볼 학생">${S.admin.data.students.slice().sort((a, b) => a.sid.localeCompare(b.sid)).map(s => `<option value="${s.sid}" ${s.sid === S.me.sid ? 'selected' : ''}>${s.sid} ${esc(s.name)} 화면</option>`).join('')}</select>
+      <button class="btn sm" style="flex:none;background:#fff;color:var(--navy)" data-act="peekExit">← 선생님 페이지</button></div>
+      <div class="wrap small" style="opacity:.85;margin-top:2px">학생이 보는 화면 그대로예요 · 보기만 되고 바뀌지 않아요</div></div>` : '';
+  app.innerHTML = `${peekBar}
     <header><div class="wrap">
-      <div class="brand grow"><small>나미쌤과 함께하는 4주 공부방법</small>${esc(S.settings.studyName)}</div>
+      <div class="brand grow"><small>${S.peek ? `<span style="color:#FFB3CF">👀 선생님 보기 · ${esc(S.me.name)} 화면</span>` : '나미쌤과 함께하는 4주 공부방법'}</small>${esc(S.settings.studyName)}</div>
       <button id="hdrTimer" class="chip timer hidden" data-act="go" data-v="timer"></button>
       ${examDday ? `<span class="chip dday">시험 ${examDday}</span>` : ''}
       <button class="iconbtn" data-act="menu" aria-label="메뉴">☰</button>
@@ -1317,6 +1559,9 @@ function viewLogin() {
       </form>
       ${!IS_LIVE ? `<p class="small muted center mt12">체험 모드 가입코드: <b>1234</b></p>` : ''}
     </div>
+    ${PLAT.inapp ? `<div class="card pink small">⚠️ 지금 <b>${PLAT.kakao ? '카카오톡' : '다른 앱'} 안</b>에서 열려 있어요. 로그인이 자꾸 풀릴 수 있어요.
+      ${PLAT.kakao ? '<button class="btn block mt8" data-act="openExternal">🌐 크롬·사파리로 열기</button>' : '<br>오른쪽 위 메뉴에서 <b>"다른 브라우저로 열기"</b>를 눌러 주세요.'}</div>` : ''}
+    ${isInstalled() ? '' : '<p class="center"><button class="linkbtn" data-act="installGuide">📲 앱처럼 설치하는 법 (홈 화면에 추가)</button></p>'}
     <p class="center"><button class="linkbtn" data-act="adminOpen">👩‍🏫 선생님 페이지</button></p>
   </div>`;
 }
@@ -1335,12 +1580,15 @@ function viewHome() {
   const missions = [
     { done:t.planner, e:'📒', n:'오늘 플래너 인증', xp:'+' + XP.PLANNER, go:'upload' },
     { done:t.note, e:'📝', n:'배움노트 인증', xp:'+' + XP.NOTE, go:'upload' },
+    { done:t.proof > 0, e:'📚', n:'공부한 것 사진 인증', xp:'+' + XP.PROOF, go:'upload' },
     { done:t.study >= 30, e:'⏱️', n:`공부 30분 (${Math.min(t.study, 30)}/30분)`, xp:'1분=1XP', go:'timer' },
     { done:t.rounds > 0, e:'🔁', n:'회독 1칸 채우기', xp:'+' + XP.ROUND, go:'rounds' },
     { done:t.qmade > 0, e:'✍️', n:'나만의 문제 1개 만들기', xp:'+' + XP.QMAKE, go:'qmake' },
   ];
   const perfect = t.planner && t.note && t.study >= 30;
   return `
+    ${noticeList().map(noticeHtml).join('')}
+    ${installCard()}
     <div class="hero">${MASCOT}<div class="bubble" data-act="namiLine">${esc(line)}</div></div>
 
     <div class="card navy">
@@ -1469,44 +1717,139 @@ function paintTimer() {
 
 /* ---------- 사진 인증 ---------- */
 function viewUpload() {
-  const st = myStats();
+  const st = myStats(), t = st.today;
   const kinds = [
-    { k:'PLANNER', e:'📒', n:'오늘의 플래너', d:'오늘 쓴 나미플래너 사진', xp:XP.PLANNER, done:st.today.planner, s:st.today.plannerSt },
-    { k:'NOTE', e:'📝', n:'배움노트', d:'오늘 배운 내용 정리한 노트 사진', xp:XP.NOTE, done:st.today.note, s:st.today.noteSt },
+    { k:'PLANNER', e:'📒', n:'오늘의 플래너', d:'오늘 쓴 나미플래너 사진', xp:`+${XP.PLANNER} XP`, done:t.planner, s:t.plannerSt },
+    { k:'NOTE', e:'📝', n:'배움노트', d:'오늘 배운 내용 정리한 노트 사진', xp:`+${XP.NOTE} XP`, done:t.note, s:t.noteSt },
+    { k:'PROOF', e:'📚', n:'공부 인증', d:'문제집 푼 것 · 백지 복습 · 단권화한 것 등 오늘 공부한 걸 찍어요', xp:`장당 +${XP.PROOF} XP`, done:t.proof > 0, n2:t.proof },
   ];
-  const mine = S.logs.filter(l => l.sid === S.me.sid && (l.type === 'PLANNER' || l.type === 'NOTE')).slice(-14).reverse();
-  return `${ttViewer()}${rangeViewer()}
+  return `${tipBox('plan')}${tipBox('note')}${ttViewer()}${rangeViewer()}
     ${kinds.map(x => `<div class="card upl">
-      <div class="row"><span style="font-size:30px">${x.e}</span><div class="grow"><h3 style="margin:0">${x.n}</h3><div class="small muted">${x.d}</div></div><span class="xp">+${x.xp} XP</span></div>
-      ${x.done ? `<div class="mt8"><span class="tag ${x.s === '승인' ? 'ok' : 'wait'}">✅ 오늘 인증 완료 · ${x.s === '승인' ? '선생님 확인 완료' : '선생님 확인 대기'}</span></div>` : ''}
+      <div class="row"><span style="font-size:30px">${x.e}</span><div class="grow"><h3 style="margin:0">${x.n}</h3><div class="small muted">${x.d}</div></div><span class="xp">${x.xp}</span></div>
+      ${x.k === 'PROOF' ? `<div class="small muted mt8">하루 ${LIMIT.PROOF}장까지 XP를 받아요${x.n2 ? ` · <b style="color:var(--green)">오늘 ${x.n2}장 인증 ✅</b>` : ''}</div>`
+        : x.done ? `<div class="mt8"><span class="tag ${x.s === '승인' ? 'ok' : 'wait'}">✅ 오늘 인증 완료 · ${x.s === '승인' ? '선생님 확인 완료' : '선생님 확인 대기'}</span></div>` : ''}
       ${S.pending[x.k] ? `<div class="pv"><img src="${S.pending[x.k]}" alt="미리보기"></div>
+        ${x.k === 'PROOF' ? `<input class="input sm mt8" id="proofMemo" maxlength="40" placeholder="무엇을 공부했나요? 예: 수학 쎈 p.30~35, 역사 백지 복습">` : ''}
+        <label class="small row mt8" style="gap:6px"><input type="checkbox" data-share="${x.k}" ${store.get('share_' + x.k, false) ? 'checked' : ''}> 👀 친구들에게도 보여 주기 <span class="muted">(안 고르면 선생님만 봐요)</span></label>
         <div class="row mt12"><button class="btn ghost grow" data-act="pickPhoto" data-v="${x.k}">다시 고르기</button><button class="btn grow" data-act="sendPhoto" data-v="${x.k}" id="send-${x.k}">올리기</button></div>`
       : `<button class="btn ${x.done ? 'ghost' : ''} block mt12" data-act="pickPhoto" data-v="${x.k}">📷 ${x.done ? '한 장 더 올리기' : '사진 찍기 / 고르기'}</button>`}
       <input type="file" accept="image/&#42;" id="file-${x.k}" data-kind="${x.k}" class="hidden">
     </div>`).join('')}
-    <div class="card">
-      <h3>내 인증 기록</h3>
-      ${mine.length ? `<div class="list">${mine.map(l => `<div class="it"><span>${l.type === 'PLANNER' ? '📒' : '📝'}</span><span class="grow">${l.d.slice(5).replace('-', '/')} ${l.type === 'PLANNER' ? '플래너' : '배움노트'}</span>
-        <span class="tag ${l.st === '승인' ? 'ok' : l.st === '반려' ? 'no' : 'wait'}">${l.st === '반려' ? '반려 · 다시 올려 줘' : l.st || '대기'}</span></div>`).join('')}</div>` : `<p class="small muted" style="margin:0">첫 인증을 올려 보자! 📸</p>`}
+    ${photoBoard()}
+    <p class="small muted center">선생님이 사진을 확인해요. 반려되면 XP가 빠지고 친구 공개도 내려가요.</p>`;
+}
+
+// 📸 인증 모아보기: 내 인증 / 친구 인증 × 플래너 · 배움노트 · 공부 인증
+function photoBoard() {
+  const open = S.galOpen;
+  const who = S.phWho || 'me', kind = S.phKind || 'PLANNER';
+  const K = photoKind(kind);
+  const name = sid => (S.students.find(s => s.sid === sid) || { name:'' }).name;
+  const from = addDays(todayStr(), -13);
+  const pick = (k, w) => S.logs.filter(l => l.type === k && (w === 'me' ? l.sid === S.me.sid : l.sid !== S.me.sid && l.p && l.st !== '반려' && l.d >= from));
+  const list = pick(kind, who).slice().reverse();
+  const shown = list.slice(0, S.galMore ? 60 : 12);
+  const day = l => `${+l.d.slice(5, 7)}/${+l.d.slice(8)}`;
+  const memo = l => l.type === 'PROOF' && l.m && l.m !== '공부인증' ? ' · ' + esc(l.m) : '';
+  const stTag = l => `<span class="tag st ${l.st === '승인' ? 'ok' : l.st === '반려' ? 'no' : 'wait'}">${l.st === '반려' ? '반려' : l.st || '대기'}</span>`;
+  return `<div class="card blue">
+    <button class="tthead" data-act="galToggle"><span class="jua grow" style="font-size:17px">📸 인증 모아보기</span><span class="small muted">${open ? '접기 ▲' : '펼치기 ▼'}</span></button>
+    ${!open ? '<div class="small muted mt8">내 인증 기록과 친구들이 공개한 사진을 종류별로 볼 수 있어요!</div>' : `
+      <div class="toggle mt12" style="width:100%">
+        <button style="flex:1" class="${who === 'me' ? 'on' : ''}" data-act="phWho" data-v="me">🙋 내 인증</button>
+        <button style="flex:1" class="${who === 'friends' ? 'on' : ''}" data-act="phWho" data-v="friends">👀 친구 인증</button></div>
+      <div class="seg mt8">${PHOTO_KINDS.map(x => { const n = pick(x.k, who).length;
+        return `<button class="${x.k === kind ? 'on' : ''}" data-act="phKind" data-v="${x.k}">${x.e} ${x.n}${n ? ` <span style="opacity:.75">${n}</span>` : ''}</button>`; }).join('')}</div>
+      ${!shown.length ? `<p class="small muted" style="margin:12px 0 0">${who === 'me' ? `아직 올린 ${K.n} 사진이 없어요. 위에서 첫 인증을 올려 보자! 📸` : `최근 2주 동안 친구들이 공개한 ${K.n} 사진이 없어요. 첫 번째로 공개해 볼래? 👀`}</p>`
+      : who === 'me' ? `
+        <div class="gal mt12">${shown.map(l => `<div class="phw">
+          <div class="ph" data-act="galZoom" data-v="${l.id}" data-gal="${l.id}">${galInner(l.id)}<div class="nm">${K.e} ${day(l)}${memo(l)}</div></div>
+          ${stTag(l)}
+          <button class="sh" data-act="sharePhoto" data-v="${l.id}">${l.p ? '👀 공개 중' : '🔒 나만 보기'}</button></div>`).join('')}</div>
+        <p class="small muted" style="margin:8px 0 0">사진 아래 🔒/👀 를 누르면 친구들에게 보여 줄지 바꿀 수 있어요.</p>`
+      : `<div class="gal mt12">${shown.map(l => `<div class="ph" data-act="galZoom" data-v="${l.id}" data-gal="${l.id}">${galInner(l.id)}<div class="nm">${esc(name(l.sid))} · ${day(l)}${memo(l)}</div></div>`).join('')}</div>`}
+      ${!S.galMore && list.length > 12 ? `<button class="linkbtn mt8" data-act="galMore">${list.length}장 모두 보기</button>` : ''}`}
+  </div>`;
+}
+
+// 🌸 접었다 펴는 나미쌤 tip 상자 (인증 탭 · 회독 탭)
+const TIPBOX = {
+  plan: { cls:'yellow', t:'🌸 계획 세울 때 🌸 tip', h:`
+    <ol class="tipl">
+      <li>📱 <b>티처스 앱 → 인증 탭</b><br>위에 있는 <b>📅 시간표</b>와 <b>📌 시험 범위</b>를 보며 <b>내일 들어 있는 암기과목</b> 위주로 <b>회독 계획</b>을 세운다.</li>
+      <li>🗓️ 예를 들어 오늘 <b>목요일</b>인데 내일 계획표를 짠다?<br>내일은 도덕 · 역사 · 과학 · 국어 · 수학이 있네? 🤔<br>그럼 <b>역사 · 과학 · 국어</b> 배운 내용 <b>1회독 + 단권화</b> 한다 생각하고 계획 세운다 ✍️</li>
+      <li>🧮 수학은 <b>매일 조금씩!</b><br><span class="hl y">"수학 문제집 이름 + 시작 페이지 ~ 끝 페이지"</span></li>
+    </ol>` },
+  note: { cls:'pink', t:'🌸 배움노트 🌸 작성 tip', h:`
+    <p style="margin:0 0 8px">📅 <b>매일</b> 작성합니다.<br>🙆 시험 아닌 과목은 안 써도 됩니다.</p>
+    <div class="stars">
+      <div>⭐️ 선생님이 중요하다고 한 것</div>
+      <div>⭐️ 내가 중요하다고 생각하는 것</div>
+      <div>⭐️ 틀린 문제</div>
+      <div>⭐️ 주요 문법과 예문</div>
+    </div>` },
+  round: { cls:'pink', t:'🌸 회독 🌸 하는 방법', h:`
+    <ol class="tipl">
+      <li>📚 배운 곳까지 <b>단권화</b>합니다. <span class="muted">(인강, 자습서, 문제집)</span></li>
+      <li>📖 전체적인 흐름을 잡으면서 개념어에다 <span class="hl g">💚 초록형광펜</span>을 칠하며 읽습니다.<br>읽다가 모르는 단어는 <span class="pen g">💚 초록색 펜</span>으로 뜻을 적습니다.</li>
+      <li>📝 <span class="hl g">초록형광펜</span> 칠한 개념어만 <b>포스트잇</b>에 적어서 해당 학습지에 붙여 둡니다.</li>
+      <li>✍️ 포스트잇만 보고 <b>백지</b>에 내용을 적어 봅니다.<br>안 외워지는 개념은 <span class="pen g">초록색</span>으로 포스트잇에 ⭕ 동그라미 합니다.</li>
+    </ol>
+    <div class="card" style="padding:10px 12px;margin:10px 0 0;box-shadow:none">
+      🩷 이걸 <b>최소 3번</b> 반복합니다.<br>다음번에 볼 때는 초록형광펜이 아니라 <b>노랑, 핑크</b> 순으로 공부합니다.
+      <div class="rsteps mt8"><span class="hl g">1회독 💚 초록</span> → <span class="hl y">2회독 💛 노랑</span> → <span class="hl p">3회독 🩷 핑크</span></div>
+    </div>` },
+  dan: { cls:'yellow', t:'🌸 단권화 🌸 tip', h:`
+    <p style="margin:0 0 8px">주로 <b>학습지</b>로 수업하시면 학습지에,<br><b>교과서</b>로 수업하시면 교과서에 단권화 📒</p>
+    <div class="stars">
+      <div>⭐️ 인강, 학원, 자습서에서 공부했던 <b>모든 내용을 한 곳에</b> 모읍니다!!</div>
+      <div>⭐️ 문제 풀면서 몰랐던 보기, 틀린 보기도 <b>모두 단권화</b> 합니다.</div>
     </div>
-    <p class="small muted center">선생님이 사진을 확인해요. 반려되면 XP가 빠져요.</p>`;
+    <h4 class="jua" style="margin:14px 0 6px;font-size:16px">🍀 색깔펜 사용법</h4>
+    <div class="pens">
+      <div><span class="pen k">✒️ 검정</span> 학교 수업 필기</div>
+      <div><span class="pen b">✒️ 파랑</span> 추가 필기 <span class="muted">(학원, 인강, 자습서)</span></div>
+      <div><span class="pen g">✒️ 초록</span> 모르는 단어, 백지 암기 했을 때 못 적었던 부분</div>
+      <div><span class="pen r">✒️ 빨강</span> 틀린 개념 정리</div>
+      <div class="mt8"><span class="hl g">초록형광</span> 개념어, 주제어</div>
+      <div><span class="hl y">노랑형광</span> 중요한 부분</div>
+      <div><span class="hl p">핑크형광</span> 몇 회독 해도 안 외워진 부분</div>
+    </div>` },
+};
+function tipBox(id) {
+  const x = TIPBOX[id], open = store.get('tipbox_' + id, false);
+  return `<div class="card ${x.cls} tipbox">
+    <button class="tthead" data-act="tipBox" data-v="${id}"><span class="jua grow" style="font-size:17px">${x.t}</span><span class="small muted">${open ? '접기 ▲' : '펼치기 ▼'}</span></button>
+    ${open ? `<div class="tipbody">${x.h}</div>` : ''}
+  </div>`;
+}
+// 친구 사진은 필요할 때만 서버에서 작게 불러와요
+const galCache = {};
+function galInner(id) {
+  const src = galCache[id];
+  if (src === undefined) {
+    galCache[id] = 'loading';
+    api('getSharedPhoto', S.token, id, false).then(s => { galCache[id] = s; }).catch(() => { galCache[id] = 'error'; })
+      .then(() => document.querySelectorAll(`[data-gal="${id}"]`).forEach(el => { const nm = el.querySelector('.nm'); el.innerHTML = galInner(id) + (nm ? nm.outerHTML : ''); }));
+    return '<div class="spinner" style="width:24px;height:24px;margin:0"></div>';
+  }
+  if (src === 'loading') return '<div class="spinner" style="width:24px;height:24px;margin:0"></div>';
+  if (src === 'error') return '<span class="small muted">😢</span>';
+  return `<img src="${src}" alt="친구 사진" loading="lazy">`;
 }
 
 /* ---------- 회독판 ---------- */
 function viewRounds() {
   const subs = S.profile.exam.subjects;
   if (!subs.length) return `<div class="card empty"><div class="big">📚</div><h3>아직 회독판이 없어요</h3><p class="small">첫 시간 미션에서 시험 과목과 범위, 문제집을 등록하면<br>과목별 회독판이 만들어져요.</p><button class="btn" data-act="go" data-v="setup">첫 시간 미션 하러 가기</button></div>`;
-  const tabs = `<div class="toggle" style="width:100%;margin-bottom:12px">
-      <button style="flex:1" class="${S.roundsTab !== 'dan' ? 'on' : ''}" data-act="roundsTab" data-v="rounds">🔁 회독판</button>
-      <button style="flex:1" class="${S.roundsTab === 'dan' ? 'on' : ''}" data-act="roundsTab" data-v="dan">📒 단권화</button></div>`;
-  if (S.roundsTab === 'dan') return tabs + viewDan(subs);
   let filled = 0, total = 0;
   subs.forEach(s => s.units.forEach(u => s.books.forEach(b => { total++; if ((S.profile.rounds[rkey(s, u, b)] || 0) >= s.goal) filled++; })));
-  return tabs + `
+  return `${tipBox('round')}${tipBox('dan')}
     <div class="row between" style="margin-bottom:12px">
       <div><h2 style="margin:0">회독판</h2><div class="small muted">한 번 다 봤으면 칸을 눌러 +1회독! 수학은 "1단원 오답"처럼 적어서 오답 다시 보기에도 써요.</div></div>
-      <div class="toggle"><button class="${S.minus ? '' : 'on'}" data-act="minus" data-v="0">+1</button><button class="${S.minus ? 'on' : ''}" data-act="minus" data-v="1">−1 고치기</button></div>
+      <div class="toggle" style="flex:none;white-space:nowrap"><button class="${S.minus ? '' : 'on'}" data-act="minus" data-v="0">＋1</button><button class="${S.minus ? 'on' : ''}" data-act="minus" data-v="1">✏️ 줄이기</button></div>
     </div>
+    ${S.minus ? `<div class="card" style="background:#FCE3E1;border-color:#F5C2BE;padding:10px 12px">✏️ <b>줄이기 모드</b> · 고칠 칸을 누르면 몇 회독으로 바꿀지 고를 수 있어요. <b>0 = 초기화</b><br><span class="small muted">잘못 누른 걸 고치는 용도라 줄이기만 돼요. 다 고쳤으면 [＋1]을 눌러 돌아가요.</span></div>` : ''}
     <div class="card yellow" style="padding:12px 14px">
       <div class="row between small"><span>⭐ 목표 회독을 채운 칸</span><b>${filled} / ${total}</b></div>
       <div class="bar yellow mt8"><i style="width:${total ? filled / total * 100 : 0}%"></i></div>
@@ -1528,7 +1871,7 @@ function viewRounds() {
           <table class="rgrid"><thead><tr><th class="u">단원 · 범위</th>${s.books.map(b => `<th title="${esc(b.name)}">${esc(b.name)}</th>`).join('')}</tr></thead>
           <tbody>${s.units.map(u => `<tr><td class="u">${esc(u.name)}</td>${s.books.map(b => { const n = S.profile.rounds[rkey(s, u, b)] || 0;
             return `<td><button class="rcell ${n >= s.goal ? 'goal' : ''}" data-n="${Math.min(n, 2)}" data-act="round" data-v="${rkey(s, u, b)}">${n || ''}</button></td>`; }).join('')}</tr>`).join('')}</tbody></table>
-          <div class="row between mt8"><span class="small muted">목표 ${s.goal}회독 ★</span><button class="btn ghost sm" data-act="editBooks">✏️ 단원·교재 수정</button></div>`
+          <div class="row between mt8"><span class="small muted">목표 ${s.goal}회독 ★</span>${S.minus && s.units.some(u => s.books.some(b => S.profile.rounds[rkey(s, u, b)])) ? `<button class="btn ghost sm" style="color:var(--red)" data-act="roundSubjReset" data-v="${s.id}">↺ ${esc(s.name)} 모두 0으로</button>` : `<button class="btn ghost sm" data-act="editBooks">✏️ 단원·교재 수정</button>`}</div>`
         : `<div class="empty small">단원(범위)과 교재를 추가해 주세요.<br><button class="btn sm mt8" data-act="editBooks">단원·교재 추가</button></div>`) : ''}
       </div>`;
     }).join('')}</div>`;
@@ -1572,15 +1915,18 @@ function ttViewer() {
   const chip = n => { const s = examMap[n];
     return `<span class="ttchip ${s ? 'exam' : ''}" style="background:${subjColor(n)}">${s ? '⭐ ' : ''}${esc(n)}${s && s.teacher ? ` <small>${esc(s.teacher)}</small>` : ''}</span>`; };
   const daySubs = d => uniq(g[d].filter(Boolean));
-  const focus = todayIdx >= 0 ? todayIdx : 0;
+  // 계획은 '내일' 수업 기준으로 세워요 (금·토요일엔 다음 주 월요일)
+  const tmr = di < 4 ? di + 1 : 0;
+  const isTmr = di < 4 || di === 6;
+  const tmrLabel = isTmr ? `내일(${TT_DAYS[tmr]})` : '다음 주 월요일';
   return `<div class="card blue">
     <button class="tthead" data-act="ttToggle"><span class="jua grow" style="font-size:17px">📅 우리 반 시간표</span><span class="small muted">${open ? '접기 ▲' : '펼치기 ▼'}</span></button>
     ${!open ? '' : !has ? `<p class="small" style="margin:8px 0">아직 시간표가 없어요. 넣어 두면 플래너 짤 때 요일별로 볼 수 있어요!</p><button class="btn sm" data-act="ttEdit">시간표 입력하기</button>` : `
-      <div class="small mt8"><b>${todayIdx >= 0 ? `오늘(${TT_DAYS[todayIdx]})` : '다음 월요일'} 수업</b></div>
-      <div class="ttchips mt8">${daySubs(focus).map(chip).join('') || '<span class="small muted">수업 없음</span>'}</div>
-      <p class="small" style="margin:8px 0 4px">✍️ 오늘 수업 들은 <b>⭐ 시험 과목</b>부터 복습 계획을 세워 봐!</p>
+      <div class="small mt8"><b>🌙 ${tmrLabel} 수업</b></div>
+      <div class="ttchips mt8">${daySubs(tmr).map(chip).join('') || '<span class="small muted">수업 없음</span>'}</div>
+      <p class="small" style="margin:8px 0 4px">✍️ ${isTmr ? '내일' : '월요일에'} 있는 <b>⭐ 시험 과목(암기과목)</b> 위주로 <b>1회독 + 단권화</b> 계획! 수학은 매일 조금씩 🧮</p>
       <div class="card" style="padding:4px 8px;margin:8px 0 6px;box-shadow:none">
-        ${TT_DAYS.map((d, i) => `<div class="ttday ${i === todayIdx ? 'today' : ''}"><b>${d}</b><div class="ttchips">${daySubs(i).map(chip).join('') || '<span class="small muted">-</span>'}</div></div>`).join('')}
+        ${TT_DAYS.map((d, i) => `<div class="ttday ${i === todayIdx ? 'today' : ''}"><b>${d}${i === tmr && isTmr ? '<small style="display:block;font-size:10px;color:var(--blue)">내일</small>' : ''}</b><div class="ttchips">${daySubs(i).map(chip).join('') || '<span class="small muted">-</span>'}</div></div>`).join('')}
       </div>
       <details><summary class="small" style="cursor:pointer">교시별로 보기</summary>
         <table class="tt view mt8"><thead><tr><th></th>${TT_DAYS.map((d, i) => `<th style="${i === todayIdx ? 'color:var(--pink);font-weight:700' : ''}">${d}</th>`).join('')}</tr></thead>
@@ -1598,6 +1944,7 @@ function rangeViewer() {
   const subs = S.profile.exam.subjects.slice().sort((a, b) => order(a) < order(b) ? -1 : order(a) > order(b) ? 1 : 0);
   const di = (new Date().getDay() + 6) % 7;
   const todaySubs = di < 5 ? ttGrid()[di].filter(Boolean) : [];
+  const tmrSubs = di < 4 ? ttGrid()[di + 1].filter(Boolean) : di === 6 ? ttGrid()[0].filter(Boolean) : [];
   const start = S.profile.exam.start || S.settings.examStart;
   return `<div class="card pink">
     <button class="tthead" data-act="rangeToggle"><span class="jua grow" style="font-size:17px">📌 시험 범위${start ? ` <span class="chip dday" style="font-size:12px;vertical-align:2px">${ddayText(start)}</span>` : ''}</span><span class="small muted">${open ? '접기 ▲' : '펼치기 ▼'}</span></button>
@@ -1608,6 +1955,7 @@ function rangeViewer() {
             <div class="row" style="gap:6px"><b class="jua" style="font-size:16px">${esc(s.name)}</b>
               ${s.teacher ? `<span class="small muted">${esc(s.teacher)} 쌤</span>` : ''}
               ${today ? '<span class="tag" style="background:#fff;color:#A07400">☀️ 오늘 수업</span>' : ''}
+              ${tmrSubs.includes(s.name) ? '<span class="tag" style="background:#fff;color:var(--blue)">🌙 내일 수업</span>' : ''}
               <span class="grow"></span>
               ${s.date ? `<span class="tag" style="background:var(--pink);color:#fff">${ddayText(s.date)}</span>` : ''}</div>
             ${s.date ? `<div class="small muted" style="margin-top:2px">📅 ${fmtExamDay(s)}</div>` : ''}
@@ -1619,38 +1967,6 @@ function rangeViewer() {
       <p class="small" style="margin:6px 0 4px">📝 배움노트엔 오늘 배운 내용이 <b>시험 범위 어디쯤인지</b>도 적어 봐!</p>
       <button class="linkbtn" data-act="rangeEdit">✏️ 범위 · 목표 고치기</button>`}
   </div>`;
-}
-
-// 단권화 체크판: 소단원(페이지)마다 3단계를 어디까지 했는지
-const danDone = (s, u) => DAN_STEPS.every((_, i) => danSteps(s, u)[i]);
-function viewDan(subs) {
-  // 과목 탭: 원하는 과목만 눌러서 봐요
-  if (!subs.some(s => s.id === S.danSubj)) S.danSubj = subs[0].id;
-  const s = subs.find(x => x.id === S.danSubj);
-  const sDone = s.danUnits.filter(u => danDone(s, u)).length;
-  return `
-    <div class="row between"><h2 style="margin:0">단권화 체크판</h2><button class="linkbtn" data-act="danHelp">${S.danHelp ? '설명 접기 ▲' : '어떻게 써요? ▼'}</button></div>
-    <div class="small muted" style="margin-bottom:10px">과목을 골라서 소단원·페이지를 적고, 한 단계 끝낼 때마다 눌러요 (+${XP.DAN} XP)</div>
-    ${S.danHelp ? `<div class="card blue" style="padding:10px 12px">
-      ${DAN_STEPS.map((d, i) => `<div class="small" style="margin:3px 0"><b>${i + 1}. ${d.e} ${d.n}</b> <span class="muted">— ${d.d}</span></div>`).join('')}
-      <button class="linkbtn" data-act="tip" data-v="note3">📚 단권화 하는 순서 자세히</button>
-    </div>` : ''}
-    <div class="seg" style="margin-bottom:10px">${subs.map(x => { const d = x.danUnits.filter(u => danDone(x, u)).length;
-      return `<button class="${x.id === s.id ? 'on' : ''}" data-act="danSubj" data-v="${x.id}">${esc(x.name)}${x.danUnits.length ? ` <span style="opacity:.75">${d}/${x.danUnits.length}</span>` : ''}</button>`; }).join('')}</div>
-    ${[s].map(s => {
-      return `<div class="card">
-        <div class="subj-head"><span class="nm">${esc(s.name)}</span>${s.teacher ? `<span class="tag">${esc(s.teacher)} 쌤</span>` : ''}<span class="grow"></span><span class="small muted">완성 ${sDone}/${s.danUnits.length}</span></div>
-        ${s.range ? `<div class="small muted mt8">📌 ${esc(s.range)}</div>` : ''}
-        ${s.danUnits.length ? `<div class="bar mt8"><i style="width:${sDone / s.danUnits.length * 100}%;background:linear-gradient(90deg,var(--green),#6CCB9A)"></i></div>` : `<p class="small muted" style="margin:10px 0 0">아래에 소단원과 페이지를 적어서 시작해요 ✏️</p>`}
-        ${s.danUnits.length ? `<div class="drow small muted" style="padding:6px 0 2px;border:0"><div class="u">소단원 · 페이지</div>${DAN_STEPS.map(d => `<span class="dhead">${d.n}</span>`).join('')}</div>` : ''}
-        ${s.danUnits.map(u => {
-          const st = danSteps(s, u), n = DAN_STEPS.filter((_, i) => st[i]).length;
-          return `<div class="drow"><div class="u">${esc(u.name)} <button class="linkbtn" style="padding:0 4px;text-decoration:none" data-act="danUnitDel" data-v="${s.id}|${u.id}" aria-label="소단원 지우기">✕</button><div class="dbar"><i style="width:${n / DAN_STEPS.length * 100}%"></i></div></div>
-            ${DAN_STEPS.map((d, i) => `<button class="dstep ${st[i] ? 'on' : ''}" data-act="dan" data-v="${dkey(s, u)}#${i}" title="${d.n}" aria-label="${esc(u.name)} ${d.n}">${d.e}</button>`).join('')}</div>`;
-        }).join('')}
-        <div class="row mt8"><input class="input sm grow" id="danu-${s.id}" placeholder="소단원 · 페이지  예: 1-1 문학의 즐거움 ~p.24" maxlength="30"><button class="btn sm" data-act="danUnitAdd" data-v="${s.id}">추가</button></div>
-      </div>`;
-    }).join('')}`;
 }
 
 /* ---------- 랭킹 ---------- */
@@ -2142,6 +2458,53 @@ function viewSetupBooks() {
     <button class="btn block" data-act="saveBooks">저장하고 회독판 보기 ${myStats().setups.has('books') ? '' : '(+' + XP.SETUP + ' XP)'}</button>`;
 }
 
+/* ---------- 선생님: 학생 한 명 기록 보기 · 고치기 ---------- */
+function studentRecordHtml() {
+  const r = S.admin.rec, st = r.student;
+  const from = addDays(todayStr(), -13);
+  const study = r.logs.filter(l => l.type === 'STUDY' && l.d >= from).slice().sort((a, b) => a.ts < b.ts ? 1 : -1);
+  const total14 = study.reduce((a, l) => a + l.v, 0);
+  // 몰아서 누른 회독 찾기: 5분 안에 8번 이상 +1
+  const plus = r.logs.filter(l => l.type === 'ROUND' && l.v > 0 && l.st !== '선생님').map(l => ({ l, t:new Date(String(l.ts).replace(' ', 'T')).getTime() })).filter(x => !isNaN(x.t)).sort((a, b) => a.t - b.t);
+  const bursts = [];
+  for (let i = 0, j = 0; i < plus.length; i++) {
+    while (plus[i].t - plus[j].t > 5 * 60000) j++;
+    const n = i - j + 1;
+    if (n < 8) continue;
+    const last = bursts[bursts.length - 1];
+    if (last && plus[j].t <= last.end) { last.end = plus[i].t; last.n = Math.max(last.n, n); } // 이어지는 구간은 하나로
+    else bursts.push({ at:plus[j].l.ts, end:plus[i].t, n });
+  }
+  const subs = ((r.profile.exam || {}).subjects || []).filter(s => (s.units || []).length && (s.books || []).length);
+  const rounds = r.profile.rounds || {};
+  return `<h2 style="margin-bottom:2px">📋 ${esc(st.name)} <span class="small muted">${st.sid}</span></h2>
+    <p class="small muted" style="margin-top:0">공부시간은 몇 분으로든 고칠 수 있고(0분 = 지우기), 회독 칸은 −/+ 로 맞출 수 있어요. XP도 그만큼 바뀌어요.</p>
+
+    <h3>⏱ 최근 2주 공부시간 <span class="small muted">합계 ${fmtMin(total14)}</span></h3>
+    ${study.length ? `<div class="list">${study.map(l => `<div class="it" style="font-size:13px">
+      <span class="muted" style="width:88px;flex:none">${+l.d.slice(5, 7)}/${+l.d.slice(8)} ${timeOf(l.ts)}</span>
+      <span class="grow">${esc(l.m)} ${l.st === '집중' ? '<span class="tag ok">🔒집중</span>' : ''} ${l.o != null ? `<span class="tag">처음 ${fmtMin(l.o)}</span>` : ''} ${l.v >= 120 ? '<span class="sus">2시간↑ 확인</span>' : ''}</span>
+      <b style="${l.v ? '' : 'color:var(--muted);text-decoration:line-through'}">${fmtMin(l.v)}</b>
+      <button class="btn ghost sm" style="padding:4px 8px" data-act="admStudyEdit" data-v="${l.id}">✏️</button></div>`).join('')}</div>`
+    : '<p class="small muted">최근 2주 공부 기록이 없어요.</p>'}
+
+    <h3 class="mt16">🔁 회독판</h3>
+    ${bursts.length ? `<div class="card" style="background:#FCE3E1;border-color:#F5C2BE;padding:10px 12px;box-shadow:none">${bursts.map(b => `⚠️ <b>${+String(b.at).slice(5, 7)}/${+String(b.at).slice(8, 10)} ${timeOf(b.at)}</b>쯤 몇 분 사이에 회독을 <b>${b.n}번</b> 눌렀어요.`).join('<br>')}</div>` : ''}
+    ${subs.length ? subs.map(s => `<div style="margin:10px 0"><b>${esc(s.name)}</b> <span class="small muted">목표 ${s.goal || 3}회독</span>
+      <table class="rgrid" style="margin-top:4px"><thead><tr><th class="u">단원</th>${s.books.map(b => `<th>${esc(b.name)}</th>`).join('')}</tr></thead>
+      <tbody>${s.units.map(u => `<tr><td class="u">${esc(u.name)}</td>${s.books.map(b => { const key = s.id + '|' + u.id + '|' + b.id, n = rounds[key] || 0;
+        return `<td style="text-align:center;white-space:nowrap"><button class="btn ghost sm" style="padding:2px 7px" data-act="admRound" data-v="${key}|-1" ${n ? '' : 'disabled'}>−</button> <b style="display:inline-block;min-width:16px">${n}</b> <button class="btn ghost sm" style="padding:2px 7px" data-act="admRound" data-v="${key}|1" ${n >= 10 ? 'disabled' : ''}>＋</button></td>`; }).join('')}</tr>`).join('')}</tbody></table></div>`).join('')
+    : '<p class="small muted">아직 회독판을 만들지 않았어요.</p>'}
+    <div class="row mt16"><button class="btn ghost grow" data-act="recMsg" data-v="${st.sid}">💌 한마디 보내기</button><button class="btn grow" data-act="closeModal">닫기</button></div>
+    <button class="linkbtn mt12" style="color:var(--red)" data-act="resetStudent" data-v="${st.sid}">🧹 이 학생 기록만 초기화 (XP 0부터)</button>`;
+}
+function refreshRecordModal() {
+  const m = document.querySelector('.modal'); if (!m) return;
+  const y = m.scrollTop;
+  m.innerHTML = `<button class="x" data-act="closeModal" aria-label="닫기">✕</button>${studentRecordHtml()}`;
+  m.scrollTop = y;
+}
+
 /* ---------- 선생님 페이지 ---------- */
 function viewAdmin() {
   const A = S.admin;
@@ -2154,14 +2517,20 @@ function viewAdmin() {
     </div></main></div>`;
   const D = A.data, date = A.date || D.today;
   const cap = D.settings.dailyStudyXpCap;
-  const photos = D.logs.filter(l => (l.type === 'PLANNER' || l.type === 'NOTE') && l.d === date && (!A.onlyPending || l.st === '대기'));
+  if (A.onlyPending == null) A.onlyPending = true; // 처음엔 확인할 사진(대기)부터 보여 줘요
+  // 사진 인증: '확인 안 한 것만'을 켜면 날짜와 상관없이 대기 중인 사진을 모두 보여 줘요 (전날 것도 승인 가능)
+  const phKind = A.phKind || 'ALL';
+  const allPending = D.logs.filter(l => photoKind(l.type) && (l.st || '대기') === '대기');
+  const photos = D.logs.filter(l => photoKind(l.type) && (phKind === 'ALL' || l.type === phKind)
+    && (A.onlyPending ? (l.st || '대기') === '대기' : l.d === date)).slice().sort((a, b) => a.ts < b.ts ? 1 : -1);
+  const pendingShown = photos.filter(l => (l.st || '대기') === '대기');
   const name = sid => (D.students.find(s => s.sid === sid) || { name:sid }).name;
   const rows = D.students.map(s => {
     const st = computeStats(s.sid, D.logs, cap, D.questions);
     const x = st.days[date] || emptyDay();
     return { s, st, x };
   }).sort((a, b) => a.s.sid.localeCompare(b.s.sid));
-  const thumb = l => IS_LIVE ? `<img loading="lazy" src="${DRIVE_URL}/thumbnail?id=${encodeURIComponent(l.fileId)}&sz=w300" alt="">` : (l.thumb ? `<img src="${l.thumb}" alt="">` : (l.type === 'PLANNER' ? '📒' : '📝'));
+  const thumb = l => IS_LIVE ? `<img loading="lazy" src="${DRIVE_URL}/thumbnail?id=${encodeURIComponent(l.fileId)}&sz=w300" alt="">` : (l.thumb ? `<img src="${l.thumb}" alt="">` : photoKind(l.type).e);
   const sch = D.settings.examSchedule || [];
   if (!A.exam) A.exam = { start:D.settings.examStart || '', subjects:sch.length ? JSON.parse(JSON.stringify(sch)) : D.settings.subjects.map(n => ({ name:n, date:'', period:'', range:'' })) };
   const qs = (D.questions || []).slice().sort((a, b) => (b.rep - a.rep) || (a.d < b.d ? 1 : a.d > b.d ? -1 : 0));
@@ -2175,8 +2544,37 @@ function viewAdmin() {
   const ttPal = uniq((D.settings.examSchedule || []).map(s => s.name).concat(D.settings.subjects, ALL_SUBJECTS.filter(n => n !== '기타'), TT_EXTRA));
   if (A.brush == null) A.brush = ttPal[0];
   const nStu = key => D.students.filter(s => classOf(s.sid) === key).length;
+  // 나미쌤 한마디: 받는 사람 (전체 / 반 / 학생)
+  const ntMode = A.ntMode || 'all';
+  if (ntMode === 'class' && !A.ntClass) A.ntClass = classKeys[0] || '';
+  if (ntMode === 'student' && !A.ntSid) A.ntSid = (D.students.slice().sort((a, b) => a.sid.localeCompare(b.sid))[0] || {}).sid || '';
+  const ntTarget = ntMode === 'class' ? 'c:' + A.ntClass : ntMode === 'student' ? 's:' + A.ntSid : 'all';
+  const ntTargetName = ntMode === 'student' ? ((D.students.find(s => s.sid === A.ntSid) || {}).name || A.ntSid) : '';
+  const allMsgs = D.messages || {};
+  const sentList = [];
+  if (D.settings.notice && D.settings.notice.text) sentList.push({ key:'all', icon:'📣', to:'전체', text:D.settings.notice.text, at:D.settings.notice.at });
+  Object.keys(allMsgs).sort().forEach(k => {
+    const who = k.startsWith('c:') ? classLabel(k.slice(2)) : ((D.students.find(s => s.sid === k.slice(2)) || {}).name || '') + ' ' + k.slice(2);
+    sentList.push({ key:k, icon:k.startsWith('c:') ? '🏫' : '💌', to:who, text:allMsgs[k].text, at:allMsgs[k].at });
+  });
+  // 모든 칸을 접었다 펴요 (펼친 칸은 기억해요)
+  const sec = (id, title, chip, body, cls) => {
+    const open = store.get('adm_' + id, false);
+    return `<div class="card ${cls || ''}" id="sec-${id}">
+      <button class="tthead" data-act="admSec" data-v="${id}"><span class="jua grow" style="font-size:17px">${title}</span>${chip || ''}<span class="small muted" style="flex:none;margin-left:4px">${open ? '▲' : '▼'}</span></button>
+      ${open ? `<div class="mt12">${body}</div>` : ''}</div>`;
+  };
+  const dateNav = `<div class="row" style="gap:6px;margin-bottom:8px">
+      <button class="btn ghost sm" data-act="adminDay" data-v="-1" aria-label="전날">◀</button>
+      <input class="input sm grow" type="date" data-adate value="${date}">
+      <button class="btn ghost sm" data-act="adminDay" data-v="1" aria-label="다음 날">▶</button>
+      ${date !== D.today ? '<button class="btn sm" data-act="adminDay" data-v="0">오늘</button>' : ''}
+    </div>`;
+  const sortedStu = D.students.slice().sort((a, b) => a.sid.localeCompare(b.sid));
+  const reported = qs.filter(q => q.rep).length;
   return `<div class="wrap"><main>
-    <div class="row between"><button class="linkbtn" data-act="adminExit">← 나가기</button><button class="btn ghost sm" data-act="adminRefresh">↻ 새로고침</button></div>
+    <div class="row between"><button class="linkbtn" data-act="adminExit">← 나가기</button>
+      <div class="row" style="gap:6px"><button class="btn ghost sm" data-act="admSecAll" data-v="0">모두 접기</button><button class="btn ghost sm" data-act="adminRefresh">↻ 새로고침</button></div></div>
     <h2>👩‍🏫 선생님 페이지</h2>
     ${A.season ? `<div class="card yellow">
       <h3 style="margin-top:0">🌱 새 스터디가 시작됐어요!</h3>
@@ -2185,9 +2583,63 @@ function viewAdmin() {
       예전 기록: ${A.season.archiveUrl ? `<a href="${esc(A.season.archiveUrl)}" target="_blank">${esc(A.season.archiveName)}</a> (구글 드라이브, 지금 시트와 같은 폴더)` : esc(A.season.archiveName)}<br>
       이제 아래 <b>📅 시험 일정</b>을 새로 입력해 주세요.</p></div>` : ''}
 
-    <div class="card ${sch.length ? '' : 'pink'}">
-      <div class="row between"><h3 style="margin:0">📅 시험 일정 (전체 공통)</h3>${sch.length ? '<span class="tag ok">학생 앱에 적용 중</span>' : '<span class="tag wait">아직 안 정함</span>'}</div>
-      <p class="small muted">여기서 정한 과목 · 시험일 · 교시 · 범위가 학생 앱에 자동으로 들어가요. 학생은 <b>목표 점수</b>만 정하면 돼요.</p>
+    <div class="card pink">
+      <h3 style="margin:0 0 4px">👀 학생 화면으로 보기</h3>
+      <p class="small muted" style="margin:0 0 8px">학생 앱(홈 · 인증 · 회독 · 랭킹 …)을 그 학생이 보는 그대로 볼 수 있어요. 보기만 되고 아무것도 바뀌지 않아요.</p>
+      ${sortedStu.length ? `<div class="row"><select class="input sm grow" id="peekPick">${sortedStu.map(s => `<option value="${s.sid}" ${s.sid === A.peekSid ? 'selected' : ''}>${s.sid} ${esc(s.name)}</option>`).join('')}</select>
+        <button class="btn sm" style="flex:none" data-act="peekOpen">보기 →</button></div>` : '<p class="small muted" style="margin:0">아직 가입한 학생이 없어요.</p>'}
+    </div>
+
+    ${sec('photo', '📸 사진 인증 확인', allPending.length ? `<span class="tag wait">⏳ 대기 ${allPending.length}장</span>` : '<span class="tag ok">모두 확인 ✓</span>', `
+      <label class="small row" style="gap:6px"><input type="checkbox" id="onlyPending" ${A.onlyPending ? 'checked' : ''}> ⏳ 확인 안 한 것만 보기 <span class="muted">(날짜 상관없이 · 전날 올린 것도 승인돼요)</span></label>
+      ${A.onlyPending ? '' : `<div class="mt8">${dateNav}</div>`}
+      <div class="seg mt8">${[{ k:'ALL', e:'📸', n:'전체' }].concat(PHOTO_KINDS).map(x => `<button class="${phKind === x.k ? 'on' : ''}" data-act="admPhKind" data-v="${x.k}">${x.e} ${x.n}</button>`).join('')}</div>
+      ${pendingShown.length > 1 ? `<button class="btn blue block mt8" data-act="adminStAll">보이는 대기 ${pendingShown.length}장 모두 승인</button>` : ''}
+      ${photos.length ? photos.map(l => `<div class="photo-card">
+        ${IS_LIVE ? `<a class="th" href="${DRIVE_URL}/file/d/${encodeURIComponent(l.fileId)}/view" target="_blank">${thumb(l)}</a>` : `<div class="th">${thumb(l)}</div>`}
+        <div class="grow"><b>${esc(name(l.sid))}</b> <span class="small muted">${photoKind(l.type).e} ${photoKind(l.type).n} · ${+l.d.slice(5, 7)}/${+l.d.slice(8)} ${timeOf(l.ts)}</span>
+          ${l.type === 'PROOF' && l.m && l.m !== '공부인증' ? `<div class="small">✏️ ${esc(l.m)}</div>` : ''}
+          <span class="tag ${l.st === '승인' ? 'ok' : l.st === '반려' ? 'no' : 'wait'}">${esc(l.st || '대기')}</span>
+          <div class="row mt8"><button class="btn sm blue" data-act="adminSt" data-v="${l.id}|승인">승인</button><button class="btn sm ghost" data-act="adminSt" data-v="${l.id}|반려">반려</button></div>
+        </div></div>`).join('') : `<p class="small muted">${A.onlyPending ? '확인할 사진이 없어요 👍' : '이 날짜에 올라온 사진이 없어요.'}</p>`}`)}
+
+    ${sec('status', '📊 학생별 현황', `<span class="small muted" style="flex:none">${+date.slice(5, 7)}/${+date.slice(8)}</span>`, `
+      ${dateNav}
+      <div style="overflow-x:auto"><table class="atable"><thead><tr><th>학생</th><th>📒</th><th>📝</th><th>📚</th><th>⏱</th><th>🔥</th><th>XP</th></tr></thead>
+      <tbody>${rows.map(r => `<tr><td>${esc(r.s.name)}<br><span class="small muted">${r.s.sid}</span></td><td>${r.x.planner ? '✅' : '·'}</td><td>${r.x.note ? '✅' : '·'}</td><td>${r.x.proof ? r.x.proof + '장' : '·'}</td><td>${r.x.study ? fmtMin(r.x.study) : '·'}</td><td>${r.st.streak}</td><td>${r.st.xp}</td></tr>`).join('') || '<tr><td colspan="7" class="muted">가입한 학생이 없어요</td></tr>'}</tbody></table></div>`)}
+
+    ${sec('notice', '📣 나미쌤 한마디', sentList.length ? `<span class="tag ok">${sentList.length}개 게시 중</span>` : '', `
+      <p class="small muted" style="margin-top:0">명언 · 응원 · 공부팁을 보내면 학생이 앱을 켤 때 <b>한 번 팝업</b>으로 뜨고, 홈 맨 위에 계속 보여요.</p>
+      <div class="small muted" style="margin-bottom:6px">받는 사람</div>
+      <div class="toggle" style="width:100%;margin-bottom:8px">${[['all', '📣 전체'], ['class', '🏫 반'], ['student', '💌 학생']].map(([k, n]) => `<button style="flex:1" class="${ntMode === k ? 'on' : ''}" data-act="ntMode" data-v="${k}">${n}</button>`).join('')}</div>
+      ${ntMode === 'class' ? `<select class="input sm" id="ntClass">${classKeys.map(k => `<option value="${k}" ${k === A.ntClass ? 'selected' : ''}>${classLabel(k)}</option>`).join('') || '<option value="">(반이 없어요)</option>'}</select>` : ''}
+      ${ntMode === 'student' ? `<select class="input sm" id="ntSid">${sortedStu.map(s => `<option value="${s.sid}" ${s.sid === A.ntSid ? 'selected' : ''}>${s.sid} ${esc(s.name)}</option>`).join('') || '<option value="">(학생이 없어요)</option>'}</select>` : ''}
+      <textarea class="input mt8" id="noticeText" rows="3" maxlength="300" placeholder="${ntMode === 'student' ? '예: 어제 3시간 공부한 거 봤어! 대단해 👏 오늘도 화이팅!' : '예: 하기 싫을 때 내딛은 한 걸음이 결국 인생의 방향을 바꾼다! 오늘은 플래너부터 써 보자 📒'}">${esc(A.noticeDraft != null ? A.noticeDraft : ((ntTarget === 'all' ? D.settings.notice : allMsgs[ntTarget]) || {}).text || '')}</textarea>
+      <div class="row mt8"><button class="btn ghost sm" data-act="noticeIdea">💡 문구 추천</button><span class="grow"></span><button class="btn navy sm" data-act="noticeSave">${ntTarget === 'all' ? '전체에게' : ntTarget.startsWith('c:') ? classLabel(ntTarget.slice(2)) + '에' : ntTargetName + '에게'} 보내기</button></div>
+      ${sentList.length ? `<div class="small muted mt12" style="margin-bottom:4px">지금 보이는 한마디 (✕ 누르면 내려가요)</div>
+        <div class="list">${sentList.map(x => `<div class="it" style="align-items:flex-start;font-size:13px"><span style="flex:none">${x.icon}</span>
+          <span class="grow"><b>${esc(x.to)}</b> <span class="muted">${esc(String(x.at).slice(5, 16))}</span><br>${esc(x.text)}</span>
+          <button class="btn ghost sm" style="padding:4px 8px" data-act="noticeDel" data-v="${x.key}" aria-label="내리기">✕</button></div>`).join('')}</div>` : ''}`)}
+
+    ${sec('students', '👥 학생 관리', `<span class="small muted" style="flex:none">${D.students.length}명</span>`, `
+      <p class="small muted" style="margin-top:0">📋 기록: 공부시간 · 회독을 보고 고쳐요 · 👀: 그 학생 화면 보기 · 비번: 비밀번호 초기화 (같은 학번으로 다시 가입, 기록은 그대로) · 🗑: 학생 삭제</p>
+      <div class="list">${sortedStu.map(s => `<div class="it"><span class="grow">${esc(s.name)} <span class="small muted">${s.sid}</span></span><button class="btn sm blue" data-act="adminRec" data-v="${s.sid}">📋 기록</button><button class="btn ghost sm" data-act="peekOpen" data-v="${s.sid}" aria-label="학생 화면 보기">👀</button><button class="btn ghost sm" data-act="adminReset" data-v="${s.sid}">비번</button><button class="btn ghost sm" style="color:var(--red)" data-act="adminDelete" data-v="${s.sid}">🗑</button></div>`).join('') || '<p class="small muted">아직 가입한 학생이 없어요.</p>'}</div>`)}
+
+    ${sec('questions', '✍️ 학생이 만든 문제', `${reported ? `<span class="tag no">🚩 ${reported}</span>` : ''}<span class="small muted" style="flex:none;margin-left:4px">${qs.length}개</span>`, `
+      <p class="small muted" style="margin-top:0">🚩 서로 다른 학생 3명이 신고하면 자동으로 숨겨져요. 숨긴 문제는 게임에 안 나오고, 만든 학생의 XP도 빠져요.<br>
+        📚 '보관'은 지난 스터디 문제예요. 게임에는 안 섞이고 '선배 문제 은행'에서만 나와요. 올해 범위에도 맞는 문제는 [올해도 쓰기]를 누르면 게임에 다시 나와요.</p>
+      ${shownQ.length ? `<div class="list">${shownQ.map(q => { const T = QTYPES.find(x => x.t === q.type) || QTYPES[0];
+        return `<div class="it" style="align-items:flex-start"><div class="grow">
+          <div class="small muted">${T.e} ${esc(q.subj)} · ${esc(q.name)} ${q.rep ? `<span class="tag no">🚩 ${q.rep}</span>` : ''} <span class="tag ${q.st === '숨김' ? 'no' : 'ok'}">${esc(q.st)}</span></div>
+          <div>${esc(q.q)}</div>
+          <div class="small">${q.type === 'ESSAY' ? '모범 답안' : '정답'}: <b>${esc(q.a)}</b>${q.opts && q.opts.length ? ({ PHOTO:' · 다른 정답: ', ESSAY:' · 핵심어: ' }[q.type] || ' · 오답: ') + q.opts.map(esc).join(', ') : ''}</div>
+          ${q.img ? `<button class="btn ghost sm mt8" data-act="adminZoomQ" data-v="${q.id}">📷 사진 보기</button>` : ''}</div>
+          <button class="btn ghost sm" data-act="adminQSt" data-v="${q.id}|${q.st === '공개' ? '숨김' : '공개'}">${q.st === '공개' ? '숨김' : q.st === '보관' ? '올해도 쓰기' : '공개'}</button></div>`; }).join('')}</div>
+        ${qs.length > shownQ.length ? `<button class="linkbtn" data-act="adminQAll">${qs.length}개 전체 보기</button>` : ''}`
+      : '<p class="small muted">아직 만든 문제가 없어요.</p>'}`)}
+
+    ${sec('exam', '📅 시험 일정 <span class="small muted">(전체 공통)</span>', sch.length ? '<span class="tag ok">적용 중</span>' : '<span class="tag wait">아직 안 정함</span>', `
+      <p class="small muted" style="margin-top:0">여기서 정한 과목 · 시험일 · 교시 · 범위가 학생 앱에 자동으로 들어가요. 학생은 <b>목표 점수</b>만 정하면 돼요.</p>
       <label class="field"><span>시험 첫날 (비우면 가장 빠른 시험일로)</span><input class="input sm" type="date" data-ax="start" value="${esc(A.exam.start)}"></label>
       ${A.exam.subjects.map((s, i) => `<div class="subjform">
         <div class="row"><input class="input sm grow" data-ax="${i}|name" value="${esc(s.name)}" placeholder="과목 이름" maxlength="20"><button class="btn ghost sm" data-act="axDel" data-v="${i}" aria-label="과목 빼기">✕</button></div>
@@ -2200,12 +2652,10 @@ function viewAdmin() {
           <button class="btn ghost sm" data-act="axTDel" data-v="${i}|${j}" aria-label="선생님 빼기">✕</button></div>`).join('')}
         <button class="linkbtn" data-act="axTAdd" data-v="${i}">＋ 선생님별 범위 (반마다 선생님·범위가 다를 때)</button>
       </div>`).join('')}
-      <div class="row mt12"><button class="btn ghost sm" data-act="axAdd">＋ 과목 추가</button><span class="grow"></span><button class="btn navy sm" data-act="axSave">저장하고 학생들에게 적용</button></div>
-    </div>
+      <div class="row mt12"><button class="btn ghost sm" data-act="axAdd">＋ 과목 추가</button><span class="grow"></span><button class="btn navy sm" data-act="axSave">저장하고 학생들에게 적용</button></div>`, sch.length ? '' : 'pink')}
 
-    <div class="card">
-      <div class="row between"><h3 style="margin:0">🗓 반별 시간표</h3><span class="small muted">학생 앱에 미리 채워져요</span></div>
-      <p class="small muted">반은 <b>학번 앞 세 자리</b>로 자동으로 나눠요 (예: 20315 → 2학년 3반). 학생도 자기 시간표를 고칠 수 있어요.</p>
+    ${sec('classtt', '🗓 반별 시간표', `<span class="small muted" style="flex:none">${Object.keys(savedCls).length}개 반 저장</span>`, `
+      <p class="small muted" style="margin-top:0">반은 <b>학번 앞 세 자리</b>로 자동으로 나눠요 (예: 20315 → 2학년 3반). 학생 앱에 미리 채워지고, 학생도 자기 시간표를 고칠 수 있어요.</p>
       <div class="seg" style="margin-bottom:10px">${classKeys.map(k => `<button class="${k === A.cls ? 'on' : ''}" data-act="axCls" data-v="${k}">${classLabel(k)}${nStu(k) ? ` <span style="opacity:.7">${nStu(k)}명</span>` : ''}${savedCls[k] ? ' ✓' : ''}</button>`).join('')}
         <button data-act="axClsAdd">＋ 반 추가</button></div>
       ${A.cls ? `
@@ -2215,55 +2665,24 @@ function viewAdmin() {
           <tbody>${Array.from({ length:TT_PERIODS }, (_, p) => `<tr><th>${p + 1}</th>${TT_DAYS.map((_, d) => { const v = A.ctt[d][p];
             return `<td><button class="ttc" style="background:${v ? subjColor(v) : '#fff'}" data-act="axCell" data-v="${d}|${p}" aria-label="${TT_DAYS[d]} ${p + 1}교시">${esc(v)}</button></td>`; }).join('')}</tr>`).join('')}</tbody></table>
         <div class="row mt12"><button class="btn ghost sm" data-act="axTtClear">모두 지우기</button><span class="grow"></span><button class="btn navy sm" data-act="axTtSave">${classLabel(A.cls)} 시간표 저장</button></div>`
-      : '<p class="small muted">아직 가입한 학생이 없어요. [＋ 반 추가]로 반을 먼저 만들 수 있어요.</p>'}
-    </div>
+      : '<p class="small muted">아직 가입한 학생이 없어요. [＋ 반 추가]로 반을 먼저 만들 수 있어요.</p>'}`)}
 
-    <div class="card"><h3 style="margin-top:0">학생별 현황</h3>
-      <div class="small muted" style="margin-bottom:6px">📆 이 날짜의 플래너·노트·공부시간과 아래 <b>사진 인증</b>을 보여 줘요</div>
-      <div class="row" style="gap:6px;margin-bottom:8px">
-        <button class="btn ghost sm" data-act="adminDay" data-v="-1" aria-label="전날">◀</button>
-        <input class="input sm grow" type="date" id="adminDate" value="${date}">
-        <button class="btn ghost sm" data-act="adminDay" data-v="1" aria-label="다음 날">▶</button>
-        ${date !== D.today ? '<button class="btn sm" data-act="adminDay" data-v="0">오늘</button>' : ''}
-      </div>
-      <div style="overflow-x:auto"><table class="atable"><thead><tr><th>학생</th><th>📒</th><th>📝</th><th>⏱</th><th>🔥</th><th>XP</th></tr></thead>
-      <tbody>${rows.map(r => `<tr><td>${esc(r.s.name)}<br><span class="small muted">${r.s.sid}</span></td><td>${r.x.planner ? '✅' : '·'}</td><td>${r.x.note ? '✅' : '·'}</td><td>${r.x.study ? fmtMin(r.x.study) : '·'}</td><td>${r.st.streak}</td><td>${r.st.xp}</td></tr>`).join('') || '<tr><td colspan="6" class="muted">가입한 학생이 없어요</td></tr>'}</tbody></table></div>
-    </div>
-    <div class="card">
-      <div class="row between"><h3 style="margin:0">사진 인증 확인 <span class="small muted">${+date.slice(5, 7)}/${+date.slice(8)}</span></h3>
-        <label class="small"><input type="checkbox" id="onlyPending" ${A.onlyPending ? 'checked' : ''}> 대기만</label></div>
-      ${photos.length ? photos.map(l => `<div class="photo-card">
-        ${IS_LIVE ? `<a class="th" href="${DRIVE_URL}/file/d/${encodeURIComponent(l.fileId)}/view" target="_blank">${thumb(l)}</a>` : `<div class="th">${thumb(l)}</div>`}
-        <div class="grow"><b>${esc(name(l.sid))}</b> <span class="small muted">${l.type === 'PLANNER' ? '플래너' : '배움노트'}</span><br>
-          <span class="tag ${l.st === '승인' ? 'ok' : l.st === '반려' ? 'no' : 'wait'}">${esc(l.st || '대기')}</span>
-          <div class="row mt8"><button class="btn sm blue" data-act="adminSt" data-v="${l.id}|승인">승인</button><button class="btn sm ghost" data-act="adminSt" data-v="${l.id}|반려">반려</button></div>
-        </div></div>`).join('') : '<p class="small muted">이 날짜에 올라온 사진이 없어요.</p>'}
-    </div>
-    <div class="card"><h3>✍️ 학생이 만든 문제 (${qs.length})</h3>
-      <p class="small muted" style="margin-top:0">🚩 서로 다른 학생 3명이 신고하면 자동으로 숨겨져요. 숨긴 문제는 게임에 안 나오고, 만든 학생의 XP도 빠져요.<br>
-        📚 '보관'은 지난 스터디 문제예요. 게임에는 안 섞이고 '선배 문제 은행'에서만 나와요. 올해 범위에도 맞는 문제는 [올해도 쓰기]를 누르면 게임에 다시 나와요.</p>
-      ${shownQ.length ? `<div class="list">${shownQ.map(q => { const T = QTYPES.find(x => x.t === q.type) || QTYPES[0];
-        return `<div class="it" style="align-items:flex-start"><div class="grow">
-          <div class="small muted">${T.e} ${esc(q.subj)} · ${esc(q.name)} ${q.rep ? `<span class="tag no">🚩 ${q.rep}</span>` : ''} <span class="tag ${q.st === '숨김' ? 'no' : 'ok'}">${esc(q.st)}</span></div>
-          <div>${esc(q.q)}</div>
-          <div class="small">${q.type === 'ESSAY' ? '모범 답안' : '정답'}: <b>${esc(q.a)}</b>${q.opts && q.opts.length ? ({ PHOTO:' · 다른 정답: ', ESSAY:' · 핵심어: ' }[q.type] || ' · 오답: ') + q.opts.map(esc).join(', ') : ''}</div>
-          ${q.img ? `<button class="btn ghost sm mt8" data-act="adminZoomQ" data-v="${q.id}">📷 사진 보기</button>` : ''}</div>
-          <button class="btn ghost sm" data-act="adminQSt" data-v="${q.id}|${q.st === '공개' ? '숨김' : '공개'}">${q.st === '공개' ? '숨김' : q.st === '보관' ? '올해도 쓰기' : '공개'}</button></div>`; }).join('')}</div>
-        ${qs.length > shownQ.length ? `<button class="linkbtn" data-act="adminQAll">${qs.length}개 전체 보기</button>` : ''}`
-      : '<p class="small muted">아직 만든 문제가 없어요.</p>'}
-    </div>
-    <div class="card"><h3>학생 관리</h3><p class="small muted" style="margin-top:0">비밀번호를 잊은 학생은 초기화 후 같은 학번으로 다시 가입하면 돼요. (기록은 그대로 남아요)</p>
-      <div class="list">${D.students.map(s => `<div class="it"><span class="grow">${esc(s.name)} <span class="small muted">${s.sid}</span></span><button class="btn ghost sm" data-act="adminReset" data-v="${s.sid}">비번 초기화</button><button class="btn ghost sm" style="color:var(--red)" data-act="adminDelete" data-v="${s.sid}">🗑 삭제</button></div>`).join('')}</div>
-    </div>
-    <div class="card">
-      <h3>🌱 새 스터디 시작하기 <span class="small muted">(새 학기 · 새 기수)</span></h3>
+    ${sec('reset', '🧹 기록 초기화 <span class="small muted">(학생 계정은 그대로)</span>', '', `
+      <p class="small muted" style="margin-top:0">테스트로 쌓인 기록을 지우고 <b>XP 0부터</b> 다시 시작해요. 학생들은 다시 가입할 필요 없어요.<br>
+        🗑 지워지는 것: 공부시간 · 사진 인증 · 회독판 숫자 · 단권화 · 게임 · 꿀팁 기록<br>
+        ✅ 남는 것: 학생 계정, 첫 시간 미션(시험 범위 · 교재 · 시간표), 시험 일정, 나미쌤 한마디<br>
+        💾 지우기 전에 구글 드라이브에 <b>백업 파일</b>을 하나 만들어 둬요. (한 학생만 지우려면 학생 관리 → 📋 기록)</p>
+      ${A.resetDone ? `<div class="card yellow small" style="padding:8px 12px;box-shadow:none">✅ 초기화했어요. 기록 ${A.resetDone.logs}개${A.resetDone.questions ? ` · 문제 ${A.resetDone.questions}개` : ''}를 지웠어요.${A.resetDone.archiveUrl ? `<br>백업: <a href="${esc(A.resetDone.archiveUrl)}" target="_blank">${esc(A.resetDone.archiveName)}</a>` : A.resetDone.archiveName ? '<br>' + esc(A.resetDone.archiveName) : ''}</div>` : ''}
+      <label class="small row" style="gap:6px;margin-bottom:12px"><input type="checkbox" id="rsQ"> 학생들이 만든 문제도 지우기 <span class="muted">(문제 만들기 XP까지 0 · 선배 문제는 그대로)</span></label>
+      <button class="btn ghost block" style="color:var(--red)" data-act="resetRecords">전체 기록 초기화하기</button>`)}
+
+    ${sec('season', '🌱 새 스터디 시작하기 <span class="small muted">(새 학기 · 새 기수)</span>', '', `
       <p class="small muted" style="margin-top:0">지금까지의 학생·기록·사진을 <b>보관 파일</b>로 통째로 복사해 두고, 앱을 빈 상태로 새로 시작해요.
         링크(GitHub 주소)는 그대로 쓰고, <b>새 가입코드</b>만 학생들에게 알려 주면 돼요.</p>
       <label class="field"><span>보관 이름</span><input class="input sm" id="nsLabel" maxlength="30" placeholder="예: 2026 2학기 기말"></label>
       <label class="field"><span>새 스터디 이름 (선택 · 비우면 그대로)</span><input class="input sm" id="nsName" maxlength="30" placeholder="예: 성적을 부탁해 티처스 3기"></label>
       <label class="small row" style="gap:6px;margin-bottom:12px"><input type="checkbox" id="nsKeepQ" checked> 학생들이 만든 문제는 <b>'선배 문제 은행'</b>으로 보관하기<br><span class="muted">(시험 범위가 다를 수 있어서 게임에는 안 섞이고, 원하는 학생만 연습용으로 풀어요)</span></label>
-      <button class="btn ghost block" data-act="newSeason">보관하고 새로 시작하기</button>
-    </div>
+      <button class="btn ghost block" data-act="newSeason">보관하고 새로 시작하기</button>`)}
   </main></div>`;
 }
 
@@ -2271,6 +2690,7 @@ function viewAdmin() {
    7. 동작 (버튼 눌렀을 때)
    ========================================================= */
 function go(v) {
+  hideUndo();
   S.view = v;
   if (v !== 'setup-time') S.avail = null;
   if (v !== 'setup-exam') { S.examDraft = null; S.ttDraft = null; }
@@ -2282,6 +2702,7 @@ function go(v) {
 async function loadState() {
   const st = await api('getState', S.token);
   S.me = st.me; S.settings = st.settings; S.students = st.students; S.logs = st.logs; S.questions = st.questions || [];
+  S.messages = st.messages || [];
   S.settings.examSchedule = S.settings.examSchedule || [];
   S.profile = defaultProfile(st.profile);
 }
@@ -2337,6 +2758,56 @@ function logout() {
   store.del(TOKEN_KEY); S.token = ''; S.me = null; S.view = 'home'; render();
 }
 
+// 👀 선생님이 학생 화면 보기: 선생님 페이지에서 받은 기록으로 그 학생의 앱을 그대로 그려요 (보기만, 저장은 api 에서 막아요)
+async function enterPeek(sid, keepView) {
+  const A = S.admin, D = A.data;
+  const r = await api('adminGetStudent', A.pw, sid);
+  if (!S.peek) S.peekBackup = { me:S.me, settings:S.settings, students:S.students, logs:S.logs, questions:S.questions, messages:S.messages, profile:S.profile };
+  A.peekSid = sid;
+  S.peek = { sid };
+  S.me = { sid, name:r.student.name };
+  S.settings = Object.assign({}, D.settings, { examSchedule:D.settings.examSchedule || [] });
+  S.students = D.students; S.logs = D.logs;
+  S.questions = (D.questions || []).filter(q => q.st === '공개' || q.st === '보관' || (q.st === '숨김' && q.sid === sid));
+  const msgs = D.messages || {}, cls = classOf(sid);
+  S.messages = [].concat(msgs['c:' + cls] ? [Object.assign({ scope:'class', key:'c:' + cls }, msgs['c:' + cls])] : [],
+    msgs['s:' + sid] ? [Object.assign({ scope:'me', key:'s:' + sid }, msgs['s:' + sid])] : []);
+  S.profile = defaultProfile(r.profile);
+  S.pending = {}; S.minus = false; S.game = null; S.homeTip = null; S.galMore = false;
+  closeModal(); hideUndo();
+  if (!keepView || ['play', 'qmake', 'setup', 'setup-time', 'setup-exam', 'setup-books'].includes(S.view)) S.view = 'home';
+  const y = keepView ? window.scrollY : 0; render(); window.scrollTo(0, y);
+}
+function exitPeek() {
+  const b = S.peekBackup || {};
+  Object.assign(S, { me:b.me || null, settings:b.settings || null, students:b.students || [], logs:b.logs || [], questions:b.questions || [], messages:b.messages || [], profile:b.profile || null });
+  S.peek = null; S.peekBackup = null; S.pending = {}; S.game = null;
+  closeModal(); hideUndo();
+  S.view = 'admin'; render(); window.scrollTo(0, 0);
+}
+
+// 회독 +1 / −1 (누르고 나면 몇 초 동안 '되돌리기'가 떠요)
+async function roundChange(key, delta, isUndo) {
+  const cur = S.profile.rounds[key] || 0;
+  if ((delta < 0 && cur === 0) || (delta > 0 && cur >= 10)) return toast(delta < 0 ? '이미 0이에요' : '최대 10회독까지예요!');
+  const before = myStats();
+  const keepY = () => { const y = window.scrollY; render(); window.scrollTo(0, y); };
+  S.profile.rounds[key] = cur + delta; keepY();
+  try {
+    const r = await api('addRound', S.token, key, delta);
+    S.profile.rounds[key] = r.count;
+    if (r.log) S.logs.push(r.log);
+    keepY();
+    if (isUndo) return toast('되돌렸어요 👌');
+    const [sid, uid2, bid] = key.split('|');
+    const s = S.profile.exam.subjects.find(x => x.id === sid);
+    const u = s && s.units.find(x => x.id === uid2), b = s && s.books.find(x => x.id === bid);
+    celebrate(before, delta > 0 && s && r.count === s.goal ? '⭐ 목표 회독 달성!' : '');
+    if (delta > 0 && s && r.count === s.goal) confetti();
+    showUndo(`${u ? u.name : ''} · ${b ? b.name : ''} ${delta > 0 ? '+1' : '−1'}회독 (지금 ${r.count})`, () => roundChange(key, -delta, true));
+  } catch (e) { S.profile.rounds[key] = cur; keepY(); toast(e.message, 'err'); }
+}
+
 // 화면 이동 없이 조용히 저장 (단권화 소단원 추가·삭제 등)
 async function saveProfileQuiet() {
   try { await api('saveProfile', S.token, JSON.parse(JSON.stringify(S.profile)), null); }
@@ -2369,17 +2840,28 @@ const ACT = {
       <button class="it" style="width:100%" data-act="menuGo" data-v="tips">💡 나미쌤 꿀팁</button>
       <button class="it" style="width:100%" data-act="menuGo" data-v="games">🎮 미니게임</button>
       <button class="it" style="width:100%" data-act="menuGo" data-v="qmake">✍️ 나만의 문제 만들기</button>
+      <button class="it" style="width:100%" data-act="installGuide">📲 앱처럼 설치하는 법 (홈 화면에 추가)</button>
       <button class="it" style="width:100%" data-act="refresh">↻ 새로고침</button>
-      <button class="it" style="width:100%" data-act="logout">🚪 로그아웃 <span class="small muted">(${esc(S.me.name)} · ${S.me.sid})</span></button>
+      ${S.peek ? `<button class="it" style="width:100%" data-act="logout">← 선생님 페이지로 돌아가기 <span class="small muted">(${esc(S.me.name)} 화면 보는 중)</span></button>`
+        : `<button class="it" style="width:100%" data-act="menuAdmin">👩‍🏫 선생님 페이지</button>
+      <button class="it" style="width:100%" data-act="logout">🚪 로그아웃 <span class="small muted">(${esc(S.me.name)} · ${S.me.sid})</span></button>`}
     </div>
     <h3 class="mt16">XP 받는 법</h3>
-    <div class="small">📒 플래너 인증 +${XP.PLANNER} · 📝 배움노트 +${XP.NOTE}<br>⏱ 공부 1분 = 1 XP (하루 최대 ${S.settings.dailyStudyXpCap})<br>🔁 회독 1칸 +${XP.ROUND} · 📒 단권화 1단계 +${XP.DAN} · 💡 꿀팁 읽기 +${XP.TIP}<br>💯 퍼펙트 데이 +${XP.PERFECT} · 🏁 첫 시간 미션 각 +${XP.SETUP}<br>
+    <div class="small">📒 플래너 인증 +${XP.PLANNER} · 📝 배움노트 +${XP.NOTE}<br>📚 공부 인증 장당 +${XP.PROOF} (하루 ${LIMIT.PROOF}장)<br>⏱ 공부 1분 = 1 XP (하루 최대 ${S.settings.dailyStudyXpCap})<br>🔁 회독 1칸 +${XP.ROUND} · 💡 꿀팁 읽기 +${XP.TIP}<br>💯 퍼펙트 데이 +${XP.PERFECT} · 🏁 첫 시간 미션 각 +${XP.SETUP}<br>
       🔒 집중 모드 25분↑ +${XP.FOCUS} (하루 ${LIMIT.FOCUS}번)<br>
       ✍️ 문제 만들기 +${XP.QMAKE} (하루 ${LIMIT.QMAKE}문제) · 친구가 내 문제 맞힘 +${XP.QCREDIT}<br>
       🎮 친구 문제 정답 +${XP.QCORRECT} · 다 맞히면 +${XP.QPERFECT} (게임은 하루 최대 ${LIMIT.GAME})</div>`),
   menuGo: el => { closeModal(); go(el.dataset.v); },
-  refresh: async () => { closeModal(); await withBusy(null, async () => { await loadState(); render(); toast('최신 기록을 불러왔어요'); }); },
-  logout: () => { closeModal(); logout(); },
+  menuAdmin: () => { closeModal(); S.admin = S.admin && S.admin.data ? S.admin : {}; S.view = 'admin'; render(); window.scrollTo(0, 0); },
+  refresh: async () => {
+    closeModal();
+    await withBusy(null, async () => {
+      if (S.peek) { S.admin.data = await api('adminGetData', S.admin.pw); await enterPeek(S.peek.sid, true); }
+      else { await loadState(); render(); }
+      toast('최신 기록을 불러왔어요');
+    });
+  },
+  logout: () => { closeModal(); if (S.peek) exitPeek(); else logout(); },
 
   tip: async el => {
     const t = TIPS.find(x => x.id === el.dataset.v);
@@ -2586,77 +3068,83 @@ const ACT = {
   },
 
   // 사진 인증
+  sharePhoto: async el => {
+    const l = S.logs.find(x => x.id === el.dataset.v); if (!l) return;
+    const on = !l.p;
+    await withBusy(el, async () => {
+      await api('setPhotoPublic', S.token, l.id, on);
+      if (on) l.p = 1; else delete l.p;
+      const y = window.scrollY; render(); window.scrollTo(0, y);
+      toast(on ? '👀 친구들에게 공개했어요' : '🔒 나만 보기로 바꿨어요');
+    });
+  },
+  galToggle: () => { S.galOpen = !S.galOpen; const y = window.scrollY; render(); window.scrollTo(0, y); },
+  galMore: () => { S.galMore = true; const y = window.scrollY; render(); window.scrollTo(0, y); },
+  galZoom: async el => {
+    const id = el.dataset.v;
+    toast('사진을 크게 불러오는 중…');
+    try { Zoom.open(await api('getSharedPhoto', S.token, id, true)); }
+    catch (e) { toast(e.message, 'err'); }
+  },
   pickPhoto: el => { const inp = $('#file-' + el.dataset.v); inp.value = ''; inp.click(); },
   sendPhoto: async el => {
     const kind = el.dataset.v;
     await withBusy(el, async () => {
       const before = myStats();
-      const log = await api('uploadPhoto', S.token, kind, S.pending[kind]);
+      const share = !!store.get('share_' + kind, false);
+      const memo = kind === 'PROOF' && $('#proofMemo') ? $('#proofMemo').value.trim() : '';
+      const log = await api('uploadPhoto', S.token, kind, S.pending[kind], share, memo);
       S.logs.push(log); delete S.pending[kind];
-      render();
-      celebrate(before, '인증 완료!');
-      if (!before.today[kind === 'PLANNER' ? 'planner' : 'note']) confetti();
+      const y = window.scrollY; render(); window.scrollTo(0, y);
+      celebrate(before, kind === 'PROOF' ? (before.today.proof < LIMIT.PROOF ? `공부 인증 완료! +${XP.PROOF} XP` : '공부 인증 완료! (오늘 XP는 다 받았어요)') : '인증 완료!');
+      if (!before.today[{ PLANNER:'planner', NOTE:'note', PROOF:'proof' }[kind]]) confetti();
     });
   },
 
   // 회독
-  minus: el => { S.minus = el.dataset.v === '1'; render(); },
+  minus: el => { S.minus = el.dataset.v === '1'; const y = window.scrollY; render(); window.scrollTo(0, y); },
   toggleSubj: el => { S.openSubj[el.dataset.v] = S.openSubj[el.dataset.v] === false; render(); },
-  round: async el => {
-    const key = el.dataset.v, delta = S.minus ? -1 : 1;
-    const cur = S.profile.rounds[key] || 0;
-    if ((delta < 0 && cur === 0) || (delta > 0 && cur >= 10)) return toast(delta < 0 ? '이미 0이에요' : '최대 10회독까지예요!');
-    const before = myStats();
-    S.profile.rounds[key] = cur + delta; render();
-    try {
-      const r = await api('addRound', S.token, key, delta);
-      S.profile.rounds[key] = r.count;
-      if (r.log) S.logs.push(r.log);
-      render();
-      const s = S.profile.exam.subjects.find(x => key.startsWith(x.id + '|'));
-      celebrate(before, delta > 0 && s && r.count === s.goal ? '⭐ 목표 회독 달성!' : '');
-      if (delta > 0 && s && r.count === s.goal) confetti();
-    } catch (e) { S.profile.rounds[key] = cur; render(); toast(e.message, 'err'); }
-  },
-  editBooks: () => go('setup-books'),
-  roundsTab: el => { S.roundsTab = el.dataset.v; render(); },
-  danSubj: el => { S.danSubj = el.dataset.v; render(); },
-  danHelp: () => { S.danHelp = !S.danHelp; render(); },
-  danUnitAdd: async el => {
-    const sid = el.dataset.v, inp = $('#danu-' + sid), v = inp.value.trim();
-    if (!v) return inp.focus();
+  round: el => {
+    const key = el.dataset.v;
+    if (!S.minus) return roundChange(key, 1);
+    // 줄이기 모드: 몇 회독으로 바꿀지 골라요 (0 = 초기화)
+    const n = S.profile.rounds[key] || 0;
+    if (!n) return toast('이미 0이에요');
+    const [sid, uid2, bid] = key.split('|');
     const s = S.profile.exam.subjects.find(x => x.id === sid);
-    s.danUnits.push({ id:uid(), name:v });
-    const y = window.scrollY; render(); window.scrollTo(0, y);
-    const next = $('#danu-' + sid); if (next) next.focus();
-    await saveProfileQuiet();
+    const u = s && s.units.find(x => x.id === uid2), b = s && s.books.find(x => x.id === bid);
+    openModal(`<h2>✏️ 회독 수 고치기</h2>
+      <p class="small" style="margin-top:0"><b>${esc(s ? s.name : '')}</b> · ${esc(u ? u.name : '')} · ${esc(b ? b.name : '')}<br>지금 <b>${n}회독</b> → 몇 회독으로 바꿀까요?</p>
+      <div class="rset">${Array.from({ length:n }, (_, k) => n - 1 - k).map(k => `<button class="btn ${k ? 'ghost' : ''}" ${k ? '' : 'style="background:var(--red)"'} data-act="roundSet" data-v="${key}|${k}">${k ? k + '회독' : '0 (초기화)'}</button>`).join('')}</div>
+      <p class="small muted" style="margin-bottom:0">줄이기만 할 수 있어요. 늘릴 때는 [＋1] 모드에서 칸을 눌러요.</p>`);
   },
-  danUnitDel: async el => {
-    const [sid, uidv] = el.dataset.v.split('|');
-    const s = S.profile.exam.subjects.find(x => x.id === sid);
-    const u = s.danUnits.find(x => x.id === uidv);
-    if (!confirm(`'${u.name}'을(를) 지울까요?`)) return;
-    s.danUnits = s.danUnits.filter(x => x.id !== uidv);
-    const y = window.scrollY; render(); window.scrollTo(0, y);
-    await saveProfileQuiet();
-  },
-  dan: async el => {
-    const [key, step] = el.dataset.v.split('#');
-    const cur = (S.profile.dan[key] || []).slice();
-    const on = !cur[+step];
-    const before = myStats();
-    const next = cur.slice(); next[+step] = on;
-    S.profile.dan[key] = next; { const y = window.scrollY; render(); window.scrollTo(0, y); }
-    try {
-      const r = await api('setDan', S.token, key, +step, on);
-      S.profile.dan[key] = r.steps;
-      if (r.log) S.logs.push(r.log);
+  roundSet: async el => {
+    const v = el.dataset.v.split('|'), count = +v.pop(), key = v.join('|');
+    await withBusy(el, async () => {
+      const r = await api('setRound', S.token, key, count);
+      S.profile.rounds[key] = r.count; S.logs.push(...r.logs);
+      closeModal();
       const y = window.scrollY; render(); window.scrollTo(0, y);
-      const full = r.steps.filter(Boolean).length === DAN_STEPS.length;
-      celebrate(before, on && full ? '📒 이 범위 단권화 완성!' : '');
-      if (on && full) confetti();
-    } catch (e) { S.profile.dan[key] = cur; render(); toast(e.message, 'err'); }
+      toast(count ? `${count}회독으로 고쳤어요 ✏️` : '0으로 초기화했어요 ↺');
+    });
   },
+  roundSubjReset: async el => {
+    const s = S.profile.exam.subjects.find(x => x.id === el.dataset.v); if (!s) return;
+    const keys = [];
+    s.units.forEach(u => s.books.forEach(b => { if (S.profile.rounds[rkey(s, u, b)]) keys.push(rkey(s, u, b)); }));
+    if (!keys.length) return toast('이미 모두 0이에요');
+    if (!confirm(`${s.name} 회독판 ${keys.length}칸을 모두 0으로 초기화할까요?\n(회독 XP도 그만큼 빠져요)`)) return;
+    await withBusy(el, async () => {
+      const r = await api('setRound', S.token, keys, 0);
+      keys.forEach(k => { S.profile.rounds[k] = 0; }); S.logs.push(...r.logs);
+      const y = window.scrollY; render(); window.scrollTo(0, y);
+      toast(`${s.name} 회독판을 초기화했어요 ↺`);
+    });
+  },
+  tipBox: el => { const k = 'tipbox_' + el.dataset.v; store.set(k, !store.get(k, false)); const y = window.scrollY; render(); window.scrollTo(0, y); },
+  phWho: el => { S.phWho = el.dataset.v; S.galMore = false; const y = window.scrollY; render(); window.scrollTo(0, y); },
+  phKind: el => { S.phKind = el.dataset.v; S.galMore = false; const y = window.scrollY; render(); window.scrollTo(0, y); },
+  editBooks: () => go('setup-books'),
 
   // 랭킹
   rankTab: el => { S.rankTab = el.dataset.v; render(); },
@@ -2745,8 +3233,58 @@ const ACT = {
     await withBusy(el, async () => {
       await api('adminSetStatus', S.admin.pw, id, st);
       const l = S.admin.data.logs.find(x => x.id === id); if (l) l.st = st;
-      render();
+      const y = window.scrollY; render(); window.scrollTo(0, y);
     });
+  },
+  // 선생님 페이지 칸 접기/펴기
+  admSec: el => {
+    const k = 'adm_' + el.dataset.v, open = !store.get(k, false);
+    store.set(k, open);
+    render();
+    if (open) { const c = document.getElementById('sec-' + el.dataset.v); if (c) c.scrollIntoView({ block:'start' }); }
+  },
+  admSecAll: () => { ['photo', 'status', 'notice', 'students', 'questions', 'exam', 'classtt', 'reset', 'season'].forEach(k => store.set('adm_' + k, false)); render(); window.scrollTo(0, 0); },
+  // 👀 학생 화면 보기 (보기만)
+  peekOpen: async el => {
+    const sid = el.dataset.v || ($('#peekPick') || {}).value;
+    if (sid) await withBusy(el, () => enterPeek(sid));
+  },
+  peekExit: () => exitPeek(),
+  admPhKind: el => { S.admin.phKind = el.dataset.v; const y = window.scrollY; render(); window.scrollTo(0, y); },
+  // 지금 화면에 보이는 대기 사진을 한 번에 승인
+  adminStAll: async el => {
+    const A = S.admin, kind = A.phKind || 'ALL', date = A.date || A.data.today;
+    const ids = A.data.logs.filter(l => photoKind(l.type) && (kind === 'ALL' || l.type === kind) && (l.st || '대기') === '대기' && (A.onlyPending || l.d === date)).map(l => l.id);
+    if (!ids.length || !confirm(`대기 중인 사진 ${ids.length}장을 모두 승인할까요?`)) return;
+    await withBusy(el, async () => {
+      await api('adminSetStatus', A.pw, ids, '승인');
+      A.data.logs.forEach(l => { if (ids.includes(l.id)) l.st = '승인'; });
+      const y = window.scrollY; render(); window.scrollTo(0, y);
+      toast(`${ids.length}장 승인했어요 ✅`);
+    });
+  },
+  resetRecords: async el => {
+    const questions = $('#rsQ').checked;
+    if (!confirm(`모든 학생의 기록을 초기화할까요?\n\n· 공부시간 · 사진 인증 · 회독 · 게임 기록이 지워지고 XP가 0이 돼요${questions ? '\n· 학생들이 만든 문제도 지워져요' : ''}\n· 학생 계정과 시험 범위 · 교재 · 시간표는 그대로예요\n· 지우기 전에 백업 파일을 만들어 둬요`)) return;
+    if (!confirm('정말 초기화할까요? (앱에서는 되돌릴 수 없어요)')) return;
+    await withBusy(el, async () => {
+      S.admin.resetDone = await api('adminResetRecords', S.admin.pw, { questions });
+      S.admin.data = await api('adminGetData', S.admin.pw);
+      render();
+      toast('기록을 초기화했어요 🧹');
+    });
+  },
+  resetStudent: async el => {
+    const sid = el.dataset.v, r = S.admin.rec;
+    if (!confirm(`${sid} ${r.student.name} 학생의 기록을 초기화할까요?\n\n· 공부시간 · 사진 인증 · 회독 · 게임 기록이 지워지고 XP가 0이 돼요\n· 계정과 시험 범위 · 교재 · 시간표는 그대로예요\n· 되돌릴 수 없어요`)) return;
+    const questions = confirm('이 학생이 만든 문제도 지울까요?\n(확인 = 지우기 / 취소 = 문제는 남기기)');
+    try {
+      const res = await api('adminResetRecords', S.admin.pw, { sid, questions });
+      S.admin.data = await api('adminGetData', S.admin.pw);
+      S.admin.rec = await api('adminGetStudent', S.admin.pw, sid);
+      refreshRecordModal(); render();
+      toast(`초기화했어요 🧹 (기록 ${res.logs}개${res.questions ? ` · 문제 ${res.questions}개` : ''})`);
+    } catch (e) { toast(e.message, 'err'); }
   },
   axAdd: () => { S.admin.exam.subjects.push({ name:'', date:'', period:'', range:'', teachers:[] }); render(); },
   axTAdd: el => {
@@ -2823,6 +3361,87 @@ const ACT = {
     });
   },
   adminQAll: () => { S.admin.qAll = true; render(); },
+  // 나미쌤 한마디
+  noticeIdea: () => {
+    const ideas = NAMI_LINES.concat(TIPS.map(t => `💡 ${t.t}: 앱의 꿀팁에서 확인해 봐!`));
+    const ta = $('#noticeText');
+    ta.value = ideas[Math.floor(Math.random() * ideas.length)];
+    S.admin.noticeDraft = ta.value;
+  },
+  // 📲 앱처럼 설치하기
+  installGuide: () => openInstallGuide(),
+  installTab: el => openInstallGuide(el.dataset.v),
+  installLater: () => { store.set('install_later', addDays(todayStr(), 3)); render(); toast('3일 뒤에 다시 알려 줄게요'); },
+  installNow: async () => {
+    if (!installEvt) return openInstallGuide();
+    installEvt.prompt();
+    try { await installEvt.userChoice; } catch (e) {}
+    installEvt = null; closeModal(); render();
+  },
+  openExternal: () => {
+    // 카카오톡 안의 브라우저 → 폰의 기본 브라우저(크롬·사파리)로 열기
+    location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(location.href.split('#')[0]);
+  },
+  recMsg: el => {
+    Object.assign(S.admin, { ntMode:'student', ntSid:el.dataset.v, noticeDraft:null });
+    closeModal(); render();
+    const ta = $('#noticeText'); if (ta) { ta.scrollIntoView({ block:'center' }); ta.focus(); }
+  },
+  ntMode: el => { S.admin.ntMode = el.dataset.v; S.admin.noticeDraft = null; const y = window.scrollY; render(); window.scrollTo(0, y); },
+  noticeSave: async el => {
+    const A = S.admin, text = $('#noticeText').value.trim();
+    const mode = A.ntMode || 'all';
+    const target = mode === 'class' ? 'c:' + A.ntClass : mode === 'student' ? 's:' + A.ntSid : 'all';
+    if (target.endsWith(':')) return toast('받는 사람을 골라 주세요.', 'err');
+    await withBusy(el, async () => {
+      const r = await api('adminSaveNotice', A.pw, text, target);
+      A.data.settings = r.settings; A.data.messages = r.messages;
+      A.noticeDraft = null;
+      const y = window.scrollY; render(); window.scrollTo(0, y);
+      toast(text ? '📣 보냈어요. 학생이 앱을 켜면 보여요!' : '한마디를 내렸어요.');
+    });
+  },
+  noticeDel: async el => {
+    const A = S.admin, key = el.dataset.v;
+    if (!confirm('이 한마디를 내릴까요?')) return;
+    await withBusy(el, async () => {
+      const r = await api('adminSaveNotice', A.pw, '', key);
+      A.data.settings = r.settings; A.data.messages = r.messages;
+      const y = window.scrollY; render(); window.scrollTo(0, y);
+      toast('내렸어요.');
+    });
+  },
+  // 학생 기록 보기 · 고치기
+  adminRec: async el => {
+    await withBusy(el, async () => {
+      S.admin.rec = await api('adminGetStudent', S.admin.pw, el.dataset.v);
+      openModal(studentRecordHtml());
+    });
+  },
+  admStudyEdit: async el => {
+    const r = S.admin.rec, l = r.logs.find(x => x.id === el.dataset.v);
+    const v = prompt(`${l.d} ${timeOf(l.ts)} ${l.m} 공부시간을 몇 분으로 고칠까요? (0 = 지우기)`, l.v);
+    if (v == null) return;
+    const n = Math.floor(+v);
+    if (!(n >= 0 && n <= 300)) return toast('0~300분 사이로 적어 주세요.', 'err');
+    try {
+      Object.assign(l, await api('adminEditStudy', S.admin.pw, l.id, n));
+      const d = S.admin.data.logs.find(x => x.id === l.id); if (d) d.v = n;
+      refreshRecordModal(); render(); toast('고쳤어요 ✏️');
+    } catch (e) { toast(e.message, 'err'); }
+  },
+  admRound: async el => {
+    const [k1, k2, k3, delta] = el.dataset.v.split('|');
+    const key = [k1, k2, k3].join('|'), r = S.admin.rec;
+    r.profile.rounds = r.profile.rounds || {};
+    const next = Math.max(0, Math.min(10, (r.profile.rounds[key] || 0) + +delta));
+    try {
+      const res = await api('adminSetRound', S.admin.pw, r.student.sid, key, next);
+      r.profile.rounds[key] = res.count;
+      if (res.log) { r.logs.push(res.log); S.admin.data.logs.push(res.log); }
+      refreshRecordModal(); render();
+    } catch (e) { toast(e.message, 'err'); }
+  },
   adminDay: el => {
     const A = S.admin, n = +el.dataset.v;
     A.date = n === 0 ? A.data.today : addDays(A.date || A.data.today, n);
@@ -2866,6 +3485,7 @@ document.addEventListener('submit', async e => {
       S.view = f.dataset.mode === 'join' ? 'setup' : 'home';
       render();
       if (f.dataset.mode === 'join') { confetti(); toast('환영해요, ' + S.me.name + '! 🌱'); }
+      showNoticePopup();
     });
   }
   if (f.id === 'adminForm') {
@@ -2899,8 +3519,15 @@ document.addEventListener('change', async e => {
     if (!s.myDate) { s.myDate = true; const y = window.scrollY; render(); window.scrollTo(0, y); }
   }
   if (el.dataset.bk != null) S.booksDraft[+el.dataset.bk][el.dataset.f] = el.type === 'checkbox' ? el.checked : +el.value;
-  if (el.id === 'adminDate') { S.admin.date = el.value; render(); }
+  if (el.dataset.adate != null && el.value) { S.admin.date = el.value; const y = window.scrollY; render(); window.scrollTo(0, y); }
+  if (el.id === 'peekSid') { await withBusy(null, () => enterPeek(el.value, true)); return; }
+  if (el.id === 'peekPick') S.admin.peekSid = el.value;
   if (el.id === 'onlyPending') { S.admin.onlyPending = el.checked; render(); }
+  if (el.id === 'ntClass' || el.id === 'ntSid') {
+    S.admin[el.id] = el.value; S.admin.noticeDraft = null; // 받는 사람을 바꾸면 그 사람에게 보낸 글을 불러와요
+    const y = window.scrollY; render(); window.scrollTo(0, y);
+  }
+  if (el.dataset.share) store.set('share_' + el.dataset.share, el.checked); // 다음에도 같은 선택으로
   bindDraftInput(el);
 });
 // 입력하는 동안 화면을 다시 그리지 않고 초안에만 저장해요 (글자 입력이 끊기지 않게)
@@ -2910,6 +3537,7 @@ function bindDraftInput(el) {
     const f = el.dataset.qf;
     if (f.startsWith('opt')) S.qdraft.opts[+f.slice(3)] = el.value; else S.qdraft[f] = el.value;
   }
+  if (el.id === 'noticeText' && S.admin) S.admin.noticeDraft = el.value;
   if (el.dataset.axt && S.admin && S.admin.exam) {
     const [i, j, f] = el.dataset.axt.split('|');
     S.admin.exam.subjects[+i].teachers[+j][f] = el.value;
@@ -2933,15 +3561,28 @@ document.addEventListener('keydown', e => {
 /* =========================================================
    8. 시작
    ========================================================= */
-(async function init() {
+async function init() {
   if (!IS_LIVE) $('#demoBar').classList.remove('hidden');
-  if (!S.token) return render();
+  if (!S.token) { render(); if (location.hash === '#install') openInstallGuide(); return; }
   $('#app').innerHTML = '<div class="spinner"></div>';
   try { await loadState(); }
-  catch (e) { store.del(TOKEN_KEY); S.token = ''; toast(e.message, 'err'); }
+  catch (e) {
+    // 로그인이 정말 만료됐을 때만 로그아웃해요. 연결이 잠깐 안 된 거면 로그인은 그대로 두고 다시 시도 버튼을 보여 줘요.
+    if (/로그인이 (만료|필요)/.test(e.message)) { store.del(TOKEN_KEY); S.token = ''; toast(e.message, 'err'); }
+    else {
+      $('#app').innerHTML = `<div class="wrap"><div class="login-hero">${MASCOT}<h1 style="font-size:28px">잠깐 연결이 안 돼요</h1>
+        <div class="sub" style="color:var(--muted)">${esc(e.message)}</div></div>
+        <button class="btn block" onclick="init()">↻ 다시 연결하기</button>
+        <p class="small muted center mt12">로그인은 그대로 남아 있어요 🙂</p></div>`;
+      return;
+    }
+  }
   render();
   if (S.me) checkAway(); // 집중 모드 중에 앱을 완전히 닫았다가 다시 연 경우
-})();
+  if (S.me) showNoticePopup();
+  if (location.hash === '#install') openInstallGuide(); // 주소 끝에 #install → 설치 안내가 바로 열려요 (수업 때 화면에 띄우기 좋아요)
+}
+init();
 </script>
 </body>
 </html>
